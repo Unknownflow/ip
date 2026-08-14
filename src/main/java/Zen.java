@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Zen {
@@ -10,17 +12,33 @@ public class Zen {
                                          "/____\\___||_| |_|";
 
     /**
-     * Returns an echo of the input string, wrapped with dividers
+     * Prints an echo of the input string, wrapped with dividers
      *
      * @param echoString The string received to be echoed back to the user
      */
     private static void echo(String echoString) {
         System.out.println("    " + DIVIDER);
-        System.out.println("    " + echoString);
+        System.out.println("    " + "added: " + echoString);
+        System.out.println("    " + DIVIDER);
+    }
+
+    /**
+     * Prints all the tasks in the order they are inserted in
+     * @param tasks List storing all tasks
+     */
+    private static void listTasks(List<String> tasks) {
+        System.out.println("    " + DIVIDER);
+
+        for (int i = 0; i < tasks.size(); i++) {
+            String output = String.format("    %d. %s", i + 1, tasks.get(i));
+            System.out.println(output);
+        }
+
         System.out.println("    " + DIVIDER);
     }
 
     public static void main(String[] args) {
+        List<String> tasks = new ArrayList<>();
         String greetingTemplate = """
                 %s
                 %s
@@ -43,8 +61,12 @@ public class Zen {
             String userInput = scanner.nextLine();
             if (userInput.equals("bye")) {
                 break;
+            } else if (userInput.equals("list")) {
+                listTasks(tasks);
+            } else {
+                tasks.add(userInput);
+                echo(userInput);
             }
-            echo(userInput);
         }
 
         scanner.close();
