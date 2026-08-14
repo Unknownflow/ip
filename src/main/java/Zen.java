@@ -15,9 +15,9 @@ public class Zen {
      * @param echoString The string received to be echoed back to the user
      */
     private static void echo(String echoString) {
-        System.out.println(DIVIDER);
-        System.out.println(echoString);
-        System.out.println(DIVIDER);
+        System.out.println("    " + DIVIDER);
+        System.out.println("    " + echoString);
+        System.out.println("    " + DIVIDER);
     }
 
     public static void main(String[] args) {
