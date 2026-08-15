@@ -19,28 +19,38 @@ public class Zen {
      * @param echoString The string received to be echoed back to the user
      */
     private static void echo(String echoString) {
-        System.out.println(INDENTED_DIVIDER);
         System.out.println(INDENTATION + "added: " + echoString);
-        System.out.println(INDENTED_DIVIDER);
     }
 
     /**
      * Prints all the tasks in the order they are inserted in
      * @param tasks List storing all tasks
      */
-    private static void listTasks(List<String> tasks) {
-        System.out.println(INDENTED_DIVIDER);
+    private static void listTasks(List<Task> tasks) {
+        System.out.println(INDENTATION + "Here are the tasks in your list:");
 
         for (int i = 0; i < tasks.size(); i++) {
-            String output = String.format("    %d. %s", i + 1, tasks.get(i));
+            String output = String.format("%s%d.%s", INDENTATION, i + 1, tasks.get(i));
             System.out.println(output);
         }
+    }
 
-        System.out.println(INDENTED_DIVIDER);
+    private static void markTaskDone(Task task) {
+        task.markAsDone();
+
+        System.out.println(INDENTATION + "Nice! I've marked this task as done:");
+        System.out.println(INDENTATION + "  " + task);
+    }
+
+    private static void markTaskNotDone(Task task) {
+        task.markAsNotDone();
+
+        System.out.println(INDENTATION + "OK, I've marked this task as not done yet:");
+        System.out.println(INDENTATION + "  " + task);
     }
 
     public static void main(String[] args) {
-        List<String> tasks = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>();
         String greetingTemplate = """
                 %s
                 %s
@@ -60,15 +70,34 @@ public class Zen {
         System.out.println(greeting);
 
         while (scanner.hasNextLine()) {
-            String userInput = scanner.nextLine();
-            if (userInput.equals("bye")) {
+            String command = scanner.next();
+
+            if (command.equals("bye")) {
                 break;
-            } else if (userInput.equals("list")) {
+            }
+
+            System.out.println(INDENTED_DIVIDER);
+            if (command.equals("list")) {
                 listTasks(tasks);
+            } else if (command.equals("mark")){
+                int idx = scanner.nextInt();
+                // array is 0-indexed, hence it is idx - 1
+                Task task = tasks.get(idx - 1);
+                markTaskDone(task);
+            } else if (command.equals("unmark")) {
+                int idx = scanner.nextInt();
+                // array is 0-indexed, hence it is idx - 1
+                Task task = tasks.get(idx - 1);
+                markTaskNotDone(task);
             } else {
-                tasks.add(userInput);
+                // if there is no command given, add task to the List and echo it to the user
+                String userInput = command + scanner.nextLine();
+                Task newTask = new Task(userInput);
+                tasks.add(newTask);
                 echo(userInput);
             }
+
+            System.out.println(INDENTED_DIVIDER);
         }
 
         scanner.close();
