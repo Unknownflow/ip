@@ -168,13 +168,37 @@ public class Zen {
                 switch (command) {
                     case "list" -> listTasks(tasks);
                     case "mark" -> {
+                        if (!scanner.hasNextInt()) {
+                            // skip the rest of the line since the input is not an integer
+                            scanner.nextLine();
+                            throw new ZenException("Only integers are allowed for marking items as done.");
+                        }
+
                         int idx = scanner.nextInt();
+                        if (idx > tasks.size()) {
+                            String exceptionMessage = String.format(
+                                    "Todo only has %d items, I am unable to mark %d as done.", tasks.size(), idx);
+                            throw new ZenException(exceptionMessage);
+                        }
+
                         // array is 0-indexed, hence it is idx - 1
                         Task task = tasks.get(idx - 1);
                         markTaskDone(task);
                     }
                     case "unmark" -> {
+                        if (!scanner.hasNextInt()) {
+                            // skip the rest of the line since the input is not an integer
+                            scanner.nextLine();
+                            throw new ZenException("Only integers are allowed for unmarking items as done.");
+                        }
+
                         int idx = scanner.nextInt();
+                        if (idx > tasks.size()) {
+                            String exceptionMessage = String.format(
+                                    "Todo only has %d items, I am unable to unmark %d as done.", tasks.size(), idx);
+                            throw new ZenException(exceptionMessage);
+                        }
+
                         // array is 0-indexed, hence it is idx - 1
                         Task task = tasks.get(idx - 1);
                         markTaskNotDone(task);
