@@ -8,6 +8,8 @@ public class Zen {
     private static final String NAME = "Zen";
     private static final String INDENTATION = " ".repeat(5);
     private static final String INDENTED_DIVIDER = " ".repeat(4) + DIVIDER;
+    private static final String DEADLINE_FORMAT = "\n     Deadline Format: deadline <description> /by <due by>";
+    private static final String EVENT_FORMAT = "\n     Event Format: event <description> /from <start> /to <end>";
     private static final String BANNER = """
                  ______             \s
                 |__  /___  _ __     \s
@@ -67,7 +69,72 @@ public class Zen {
         );
     }
 
-    public static void main(String[] args) {
+    private static Task getDeadline(String[] userInputs) throws ZenException {
+        if (userInputs.length < 2) {
+            throw new ZenException("Please include /by in your event to separate description and due by."
+                    + DEADLINE_FORMAT);
+        }
+
+        String description = userInputs[0].trim();
+        if (description.isEmpty()) {
+            throw new ZenException("The description of a Deadline cannot be empty. Please try again!"
+                    + DEADLINE_FORMAT);
+        }
+
+        if (userInputs.length > 2) {
+            throw new ZenException("Please include only 1 /by in your event to separate description and due by."
+                    + DEADLINE_FORMAT);
+        }
+
+        String dueBy = userInputs[1].trim();
+        if (dueBy.isEmpty()) {
+            throw new ZenException("The due by date / time cannot be empty. Please try again!"
+                    + DEADLINE_FORMAT);
+        }
+
+        return new Deadline(description, dueBy);
+    }
+
+    private static Task getEvent(String[] userInputs) throws ZenException {
+        if (userInputs.length < 2) {
+            throw new ZenException("Please include /from in your event to separate description and timings."
+                    + EVENT_FORMAT);
+        }
+
+        if (userInputs.length > 2) {
+            throw new ZenException("Please include only 1 /from in your event." + EVENT_FORMAT);
+        }
+
+        String description = userInputs[0].trim();
+        if (description.isEmpty()) {
+            throw new ZenException("The description of an Event cannot be empty. Please try again."
+                    + EVENT_FORMAT);
+        }
+
+        // start and end timings are still together, hence they need to be split
+        String[] timings = userInputs[1].split(" /to ");
+        if (timings.length < 2) {
+            throw new ZenException("Please include /to in your event." + EVENT_FORMAT);
+        }
+
+        if (timings.length > 2) {
+            throw new ZenException("Please include only 1 /to in your event." + EVENT_FORMAT);
+        }
+
+        String start = timings[0].trim();
+        if (start.isEmpty()) {
+            throw new ZenException("The start time of an Event cannot be empty. Please try again!" + EVENT_FORMAT);
+        }
+
+        String end = timings[1].trim();
+        if (end.isEmpty()) {
+            throw new ZenException("The end time of an Event cannot be empty. Please try again!" + EVENT_FORMAT);
+        }
+
+        return new Event(description, start, end);
+    }
+
+    public static void main(String[] args) throws ZenException {
         List<Task> tasks = new ArrayList<>();
         String greetingTemplate = """
                 %s
@@ -96,57 +163,54 @@ public class Zen {
 
             System.out.println(INDENTED_DIVIDER);
 
-            // AI-assisted: AI suggested using switch instead of if statements
-            switch (command) {
-                case "list" -> listTasks(tasks);
-                case "mark" -> {
-                    int idx = scanner.nextInt();
-                    // array is 0-indexed, hence it is idx - 1
-                    Task task = tasks.get(idx - 1);
-                    markTaskDone(task);
-                }
-                case "unmark" -> {
-                    int idx = scanner.nextInt();
-                    // array is 0-indexed, hence it is idx - 1
-                    Task task = tasks.get(idx - 1);
-                    markTaskNotDone(task);
-                }
-                case "todo" -> {
-                    // need to trim due to leading spaces
-                    // input format: todo <description>
-                    String description = scanner.nextLine().trim();
+            try {
+                // AI-assisted: AI suggested using switch instead of if statements
+                switch (command) {
+                    case "list" -> listTasks(tasks);
+                    case "mark" -> {
+                        int idx = scanner.nextInt();
+                        // array is 0-indexed, hence it is idx - 1
+                        Task task = tasks.get(idx - 1);
+                        markTaskDone(task);
+                    }
+                    case "unmark" -> {
+                        int idx = scanner.nextInt();
+                        // array is 0-indexed, hence it is idx - 1
+                        Task task = tasks.get(idx - 1);
+                        markTaskNotDone(task);
+                    }
+                    case "todo" -> {
+                        // need to trim due to leading spaces
+                        // input format: todo <description>
+                        String description = scanner.nextLine().trim();
+                        if (description.isEmpty()) {
+                            throw new ZenException("The description of a Todo cannot be empty. Please try again!");
+                        }
 
-                    Task newTodo = new Todo(description);
-                    addTask(tasks, newTodo);
+                        Task newTodo = new Todo(description);
+                        addTask(tasks, newTodo);
+                    }
+                    case "deadline" -> {
+                        // deadline is separated by "/by", need to trim due to leading spaces
+                        // input format: deadline <description> /by <dueBy>
+                        String[] userInputs = scanner.nextLine().trim().split(" /by ");
+                        Task newDeadline = getDeadline(userInputs);
+                        addTask(tasks, newDeadline);
+                    }
+                    case "event" -> {
+                        // event is separated by "/from" and "/to", need to trim due to leading spaces
+                        // input format: event <description> /from <start> /to <end>
+                        String[] userInputs = scanner.nextLine().trim().split(" /from ");
+                        Task newEvent = getEvent(userInputs);
+                        addTask(tasks, newEvent);
+                    }
+                    default -> {
+                        // if the command is not valid, throw an exception
+                        throw new ZenException("Command not found. Please try again!");
+                    }
                 }
-                case "deadline" -> {
-                    // deadline is separated by "/by", need to trim due to leading spaces
-                    // input format: deadline <description> /by <dueBy>
-                    String[] userInputs = scanner.nextLine().trim().split(" /by ");
-                    String description = userInputs[0];
-                    String dueBy = userInputs[1];
-
-                    Task newDeadline = new Deadline(description, dueBy);
-                    addTask(tasks, newDeadline);
-                }
-                case "event" -> {
-                    // event is separated by "/from" and "/to", need to trim due to leading spaces
-                    // input format: event <description> /from <start> /to <end>
-                    String[] userInputs = scanner.nextLine().trim().split(" /from ");
-                    String description = userInputs[0];
-
-                    // start and end timings are still together, hence they need to be split
-                    String[] timings = userInputs[1].split(" /to ");
-                    String start = timings[0];
-                    String end = timings[1];
-
-                    Task newEvent = new Event(description, start, end);
-                    addTask(tasks, newEvent);
-                }
-                default -> {
-                    // if the command is not valid, echo an error
-                    echo("This is not a valid command.");
-                }
+            } catch (ZenException e) {
+                echo(e.getMessage());
             }
 
             System.out.println(INDENTED_DIVIDER);
