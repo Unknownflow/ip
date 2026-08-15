@@ -32,6 +32,10 @@ public class Zen {
         );
     }
 
+    private static void echo(String echoString) {
+        printIndented(echoString);
+    }
+
     /**
      * Prints all the tasks in the order they are inserted in
      * @param tasks List storing all tasks
@@ -140,10 +144,8 @@ public class Zen {
                     addTask(tasks, newEvent);
                 }
                 default -> {
-                    // if there is no command given, add task to the List and echo it to the user
-                    String userInput = command + scanner.nextLine();
-                    Task newTask = new Task(userInput);
-                    tasks.add(newTask);
+                    // if the command is not valid, echo an error
+                    echo("This is not a valid command.");
                 }
             }
 
