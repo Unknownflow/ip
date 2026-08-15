@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,13 +22,14 @@ public class Zen {
         }
     }
 
-    /**
-     * Prints an echo of the input string, wrapped with dividers
-     *
-     * @param echoString The string received to be echoed back to the user
-     */
-    private static void echo(String echoString) {
-        printIndented(String.format("added: %s", echoString));
+    private static void addTask(List<Task> tasks, Task task) {
+        tasks.add(task);
+
+        printIndented(
+                "Got it. I've added this task:",
+                String.format("  %s", task),
+                String.format("Now you have %d tasks in the list.", tasks.size())
+        );
     }
 
     /**
@@ -105,12 +107,43 @@ public class Zen {
                     Task task = tasks.get(idx - 1);
                     markTaskNotDone(task);
                 }
+                case "todo" -> {
+                    // need to trim due to leading spaces
+                    // input format: todo <description>
+                    String description = scanner.nextLine().trim();
+
+                    Task newTodo = new Todo(description);
+                    addTask(tasks, newTodo);
+                }
+                case "deadline" -> {
+                    // deadline is separated by "/by", need to trim due to leading spaces
+                    // input format: deadline <description> /by <dueBy>
+                    String[] userInputs = scanner.nextLine().trim().split(" /by ");
+                    String description = userInputs[0];
+                    String dueBy = userInputs[1];
+
+                    Task newDeadline = new Deadline(description, dueBy);
+                    addTask(tasks, newDeadline);
+                }
+                case "event" -> {
+                    // event is separated by "/from" and "/to", need to trim due to leading spaces
+                    // input format: event <description> /from <start> /to <end>
+                    String[] userInputs = scanner.nextLine().trim().split(" /from ");
+                    String description = userInputs[0];
+
+                    // start and end timings are still together, hence they need to be split
+                    String[] timings = userInputs[1].split(" /to ");
+                    String start = timings[0];
+                    String end = timings[1];
+
+                    Task newEvent = new Event(description, start, end);
+                    addTask(tasks, newEvent);
+                }
                 default -> {
                     // if there is no command given, add task to the List and echo it to the user
                     String userInput = command + scanner.nextLine();
                     Task newTask = new Task(userInput);
                     tasks.add(newTask);
-                    echo(userInput);
                 }
             }
 
