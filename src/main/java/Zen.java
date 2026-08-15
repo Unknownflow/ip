@@ -5,8 +5,8 @@ import java.util.Scanner;
 public class Zen {
     private static final String DIVIDER = "____________________________________________________________";
     private static final String NAME = "Zen";
-    private static final String INDENTATION = "    ";
-    private static final String INDENTED_DIVIDER = INDENTATION + DIVIDER;
+    private static final String INDENTATION = " ".repeat(5);
+    private static final String INDENTED_DIVIDER = " ".repeat(4) + DIVIDER;
     private static final String BANNER = """
                  ______             \s
                 |__  /___  _ __     \s
@@ -15,13 +15,19 @@ public class Zen {
                 /____\\___||_| |_|\
             """;
 
+    private static void printIndented(String... lines) {
+        for (String line: lines) {
+            System.out.println(INDENTATION + line);
+        }
+    }
+
     /**
      * Prints an echo of the input string, wrapped with dividers
      *
      * @param echoString The string received to be echoed back to the user
      */
     private static void echo(String echoString) {
-        System.out.println(INDENTATION + "added: " + echoString);
+        printIndented(String.format("added: %s", echoString));
     }
 
     /**
@@ -29,26 +35,30 @@ public class Zen {
      * @param tasks List storing all tasks
      */
     private static void listTasks(List<Task> tasks) {
-        System.out.println(INDENTATION + "Here are the tasks in your list:");
+        printIndented("Here are the tasks in your list:");
 
         for (int i = 0; i < tasks.size(); i++) {
-            String output = String.format("%s%d.%s", INDENTATION, i + 1, tasks.get(i));
-            System.out.println(output);
+            String output = String.format("%d.%s", i + 1, tasks.get(i));
+            printIndented(output);
         }
     }
 
     private static void markTaskDone(Task task) {
         task.markAsDone();
 
-        System.out.println(INDENTATION + "Nice! I've marked this task as done:");
-        System.out.println(INDENTATION + "  " + task);
+        printIndented(
+                "Nice! I've marked this task as done:",
+                String.format("  %s", task)
+        );
     }
 
     private static void markTaskNotDone(Task task) {
         task.markAsNotDone();
 
-        System.out.println(INDENTATION + "OK, I've marked this task as not done yet:");
-        System.out.println(INDENTATION + "  " + task);
+        printIndented(
+                "OK, I've marked this task as not done yet:",
+                String.format("  %s", task)
+        );
     }
 
     public static void main(String[] args) {
