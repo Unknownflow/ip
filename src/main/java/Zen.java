@@ -69,6 +69,25 @@ public class Zen {
         );
     }
 
+    private static void deleteTask(List<Task> tasks, Task task, int idx) {
+        tasks.remove(idx - 1);
+
+        printIndented(
+                "Noted. I've removed this task:",
+                String.format("  %s", task),
+                String.format("Now you have %s tasks in the list.", tasks.size())
+        );
+    }
+
+    private static int readIntOrThrow(Scanner scanner, String errorMessage) throws ZenException {
+        if (!scanner.hasNextInt()) {
+            // skip the rest of the line since the input is not an integer
+            scanner.nextLine();
+            throw new ZenException(errorMessage);
+        }
+        return scanner.nextInt();
+    }
+
     private static Task getTaskAt(List<Task> tasks, int idx, String action) throws ZenException {
         if (idx <= 0) {
             String exceptionMessage = String.format("%s index should be positive.", action);
@@ -76,7 +95,7 @@ public class Zen {
         }
         if (idx > tasks.size()) {
             String exceptionMessage = String.format(
-                    "Todo only has %d items, I am unable to %s task %d as done.", tasks.size(), action, idx
+                    "Todo only has %d items, I am unable to %s task %d.", tasks.size(), action, idx
             );
             throw new ZenException(exceptionMessage);
         }
@@ -185,26 +204,19 @@ public class Zen {
                 switch (command) {
                     case "list" -> listTasks(tasks);
                     case "mark" -> {
-                        if (!scanner.hasNextInt()) {
-                            // skip the rest of the line since the input is not an integer
-                            scanner.nextLine();
-                            throw new ZenException("Only integers are allowed for marking items as done.");
-                        }
-
-                        int idx = scanner.nextInt();
+                        int idx = readIntOrThrow(scanner, "Only integers are allowed for marking tasks index.");
                         Task task = getTaskAt(tasks, idx, "mark");
                         markTaskDone(task);
                     }
                     case "unmark" -> {
-                        if (!scanner.hasNextInt()) {
-                            // skip the rest of the line since the input is not an integer
-                            scanner.nextLine();
-                            throw new ZenException("Only integers are allowed for unmarking items as done.");
-                        }
-
-                        int idx = scanner.nextInt();
+                        int idx = readIntOrThrow(scanner, "Only integers are allowed for unmarking tasks index.");
                         Task task = getTaskAt(tasks, idx, "unmark");
                         markTaskNotDone(task);
+                    }
+                    case "delete" -> {
+                        int idx = readIntOrThrow(scanner, "Only integers are allowed for deleting tasks index.");
+                        Task task = getTaskAt(tasks, idx, "delete");
+                        deleteTask(tasks, task, idx);
                     }
                     case "todo" -> {
                         // input format: todo <description>
