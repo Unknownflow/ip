@@ -398,7 +398,7 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     Please include only 1 /by in your event to separate description and due by.
+     Please include only one /by in your event to separate description and due by.
      Deadline Format: deadline <description> /by <due by>
     ____________________________________________________________
     ____________________________________________________________
@@ -454,7 +454,7 @@ bye
 
 ### UI-012 — Negative: malformed events do not affect subsequent state
 
-**Aim:** Verify that missing event delimiters are rejected and a later valid todo becomes the only task.
+**Aim:** Verify that events with an empty description or start time are rejected, and a later valid todo becomes the only task.
 
 **Inputs:**
 ```text
@@ -478,11 +478,11 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     Please include /from in your event to separate description and timings.
+     The description of an Event cannot be empty. Please try again.
      Event Format: event <description> /from <start> /to <end>
     ____________________________________________________________
     ____________________________________________________________
-     Please include /to in your event.
+     The start time of an Event cannot be empty. Please try again!
      Event Format: event <description> /from <start> /to <end>
     ____________________________________________________________
     ____________________________________________________________
@@ -723,9 +723,9 @@ bye
     ____________________________________________________________
 ```
 
-### UI-018 — Negative: missing deadline delimiter does not affect later state
+### UI-018 — Negative: empty deadline description does not affect later state
 
-**Aim:** Verify that a deadline without a usable description/delimiter is rejected and a later valid todo becomes task 1.
+**Aim:** Verify that a deadline with an empty description is rejected and a later valid todo becomes task 1.
 
 **Inputs:**
 ```text
@@ -748,7 +748,7 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     Please include /by in your event to separate description and due by.
+     The description of a Deadline cannot be empty. Please try again!
      Deadline Format: deadline <description> /by <due by>
     ____________________________________________________________
     ____________________________________________________________
@@ -997,7 +997,7 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     Please include /to in your event.
+     The end time of an Event cannot be empty. Please try again!
      Event Format: event <description> /from <start> /to <end>
     ____________________________________________________________
     ____________________________________________________________
