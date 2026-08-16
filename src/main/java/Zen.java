@@ -8,8 +8,6 @@ public class Zen {
     private static final String NAME = "Zen";
     private static final String INDENTATION = " ".repeat(5);
     private static final String INDENTED_DIVIDER = " ".repeat(4) + DIVIDER;
-    private static final String DEADLINE_FORMAT = "\n     Deadline Format: deadline <description> /by <due by>";
-    private static final String EVENT_FORMAT = "\n     Event Format: event <description> /from <start> /to <end>";
     private static final String BANNER = """
                  ______             \s
                 |__  /___  _ __     \s
@@ -79,13 +77,6 @@ public class Zen {
         );
     }
 
-    private static int parseIndex(String arguments, String action) throws ZenException {
-        if (!arguments.matches("\\d+")) {
-            throw new ZenException("Only positive integers are allowed for " + action + " task index.");
-        }
-        return Integer.parseInt(arguments);
-    }
-
     private static Task getTaskAt(List<Task> tasks, int idx, String action) throws ZenException {
         if (idx <= 0) {
             String exceptionMessage = String.format("%s index should be positive.", action);
@@ -100,99 +91,31 @@ public class Zen {
         return tasks.get(idx - 1);
     }
 
-    private static Deadline parseDeadline(String userInput) throws ZenException {
-        int byIdx = userInput.indexOf("/by");
-
-        if (byIdx == -1) {
-            throw new ZenException("Please include /by in your event to separate description and due by."
-                    + DEADLINE_FORMAT);
-        }
-
-        String description = userInput.substring(0, byIdx).trim();
-        if (description.isEmpty()) {
-            throw new ZenException("The description of a Deadline cannot be empty. Please try again!"
-                    + DEADLINE_FORMAT);
-        }
-
-        int nextByIdx = userInput.indexOf("/by", byIdx + "/by".length());
-        if (nextByIdx != -1) {
-            throw new ZenException("Please include only one /by in your event to separate description and due by."
-                    + DEADLINE_FORMAT);
-        }
-
-        String dueBy = userInput.substring(byIdx + "/by".length()).trim();
-        if (dueBy.isEmpty()) {
-            throw new ZenException("The due by date / time cannot be empty. Please try again!"
-                    + DEADLINE_FORMAT);
-        }
-
-        return new Deadline(description, dueBy);
-    }
-
-    private static Event parseEvent(String userInput) throws ZenException {
-        int fromIdx = userInput.indexOf("/from");
-        int toIdx = userInput.indexOf("/to");
-
-        if (fromIdx == -1) {
-            throw new ZenException("Please include /from in your event to separate description and timings."
-                    + EVENT_FORMAT);
-        }
-        if (toIdx == -1) {
-            throw new ZenException("Please include /to in your event." + EVENT_FORMAT);
-        }
-        if (fromIdx > toIdx) {
-            throw new ZenException("/from must come before /to." + EVENT_FORMAT);
-        }
-
-        if (userInput.indexOf("/from", fromIdx + "/from".length()) != -1) {
-            throw new ZenException("Please include only 1 /from in your event." + EVENT_FORMAT);
-        }
-        if (userInput.indexOf("/to", toIdx + "/to".length()) != -1) {
-            throw new ZenException("Please include only 1 /to in your event." + EVENT_FORMAT);
-        }
-
-        String description = userInput.substring(0, fromIdx).trim();
-        String start = userInput.substring(fromIdx + "/from".length(), toIdx).trim();
-        String end = userInput.substring(toIdx + "/to".length()).trim();
-
-        if (description.isEmpty()) {
-            throw new ZenException("The description of an Event cannot be empty. Please try again." + EVENT_FORMAT);
-        }
-        if (start.isEmpty()) {
-            throw new ZenException("The start time of an Event cannot be empty. Please try again!" + EVENT_FORMAT);
-        }
-        if (end.isEmpty()) {
-            throw new ZenException("The end time of an Event cannot be empty. Please try again!" + EVENT_FORMAT);
-        }
-
-        return new Event(description, start, end);
-    }
-
-    private static void requireNoArguments(String args, String command) throws ZenException {
-        if (!args.isEmpty()) {
-            throw new ZenException("The " + command + " command does not take arguments.");
-        }
-    }
-
-    public static void main(String[] args) throws ZenException {
-        List<Task> tasks = new ArrayList<>();
-        String greetingTemplate = """
+    private static void printGreeting() {
+        String greeting = """
                 %s
                 %s
                     Hello! I'm %s.
                     What can I do for you?
                 %s
-                """;
-        String exitTemplate = """
+                """.formatted(INDENTED_DIVIDER, BANNER, NAME, INDENTED_DIVIDER);
+        System.out.println(greeting);
+    }
+
+    private static void printExitMessage() {
+        String exitMessage = """
                 %s
                     Bye. See you again soon!
                 %s
-                """;
-        String greeting = String.format(greetingTemplate, INDENTED_DIVIDER, BANNER, NAME, INDENTED_DIVIDER);
-        String exitMessage = String.format(exitTemplate, INDENTED_DIVIDER, INDENTED_DIVIDER);
-        Scanner scanner = new Scanner(System.in);
+                """.formatted(INDENTED_DIVIDER, INDENTED_DIVIDER);
+        System.out.println(exitMessage);
+    }
 
-        System.out.println(greeting);
+    public static void main(String[] args) throws ZenException {
+        List<Task> tasks = new ArrayList<>();
+        Parser parser = new Parser();
+        Scanner scanner = new Scanner(System.in);
+        printGreeting();
 
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine().trim();
@@ -215,21 +138,21 @@ public class Zen {
                 // AI-assisted: AI suggested using switch instead of if statements
                 switch (command) {
                     case "list" -> {
-                        requireNoArguments(arguments, "list");
+                        parser.requireNoArguments(arguments, "list");
                         listTasks(tasks);
                     }
                     case "mark" -> {
-                        int idx = parseIndex(arguments, "mark");
+                        int idx = parser.parseIndex(arguments, "mark");
                         Task task = getTaskAt(tasks, idx, "mark");
                         markTaskDone(task);
                     }
                     case "unmark" -> {
-                        int idx = parseIndex(arguments, "unmark");
+                        int idx = parser.parseIndex(arguments, "unmark");
                         Task task = getTaskAt(tasks, idx, "unmark");
                         markTaskNotDone(task);
                     }
                     case "delete" -> {
-                        int idx = parseIndex(arguments, "delete");
+                        int idx = parser.parseIndex(arguments, "delete");
                         Task task = getTaskAt(tasks, idx, "delete");
                         deleteTask(tasks, task, idx);
                     }
@@ -244,12 +167,12 @@ public class Zen {
                     }
                     case "deadline" -> {
                         // input format: deadline <description> /by <dueBy>
-                        Task newDeadline = parseDeadline(arguments);
+                        Task newDeadline = parser.parseDeadline(arguments);
                         addTask(tasks, newDeadline);
                     }
                     case "event" -> {
                         // input format: event <description> /from <start> /to <end>
-                        Task newEvent = parseEvent(arguments);
+                        Task newEvent = parser.parseEvent(arguments);
                         addTask(tasks, newEvent);
                     }
                     default -> {
@@ -266,6 +189,6 @@ public class Zen {
         }
 
         scanner.close();
-        System.out.println(exitMessage);
+        printExitMessage();
     }
 }
