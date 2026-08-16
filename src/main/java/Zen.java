@@ -79,13 +79,11 @@ public class Zen {
         );
     }
 
-    private static int readIntOrThrow(Scanner scanner, String errorMessage) throws ZenException {
-        if (!scanner.hasNextInt()) {
-            // skip the rest of the line since the input is not an integer
-            scanner.nextLine();
-            throw new ZenException(errorMessage);
+    private static int parseIndex(String arguments, String action) throws ZenException {
+        if (!arguments.matches("\\d+")) {
+            throw new ZenException("Only positive integers are allowed for " + action + " task index.");
         }
-        return scanner.nextInt();
+        return Integer.parseInt(arguments);
     }
 
     private static Task getTaskAt(List<Task> tasks, int idx, String action) throws ZenException {
@@ -170,6 +168,12 @@ public class Zen {
         return new Event(description, start, end);
     }
 
+    private static void requireNoArguments(String args, String command) throws ZenException {
+        if (!args.isEmpty()) {
+            throw new ZenException("The " + command + " command does not take arguments.");
+        }
+    }
+
     public static void main(String[] args) throws ZenException {
         List<Task> tasks = new ArrayList<>();
         String greetingTemplate = """
@@ -191,7 +195,15 @@ public class Zen {
         System.out.println(greeting);
 
         while (scanner.hasNextLine()) {
-            String command = scanner.next();
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty()) {
+                continue;
+            }
+
+            String[] parts = input.split("\\s+", 2);
+            String command = parts[0];
+            String arguments = parts.length == 2 ? parts[1] : "";
 
             if (command.equals("bye")) {
                 break;
@@ -202,42 +214,42 @@ public class Zen {
             try {
                 // AI-assisted: AI suggested using switch instead of if statements
                 switch (command) {
-                    case "list" -> listTasks(tasks);
+                    case "list" -> {
+                        requireNoArguments(arguments, "list");
+                        listTasks(tasks);
+                    }
                     case "mark" -> {
-                        int idx = readIntOrThrow(scanner, "Only integers are allowed for marking tasks index.");
+                        int idx = parseIndex(arguments, "mark");
                         Task task = getTaskAt(tasks, idx, "mark");
                         markTaskDone(task);
                     }
                     case "unmark" -> {
-                        int idx = readIntOrThrow(scanner, "Only integers are allowed for unmarking tasks index.");
+                        int idx = parseIndex(arguments, "unmark");
                         Task task = getTaskAt(tasks, idx, "unmark");
                         markTaskNotDone(task);
                     }
                     case "delete" -> {
-                        int idx = readIntOrThrow(scanner, "Only integers are allowed for deleting tasks index.");
+                        int idx = parseIndex(arguments, "delete");
                         Task task = getTaskAt(tasks, idx, "delete");
                         deleteTask(tasks, task, idx);
                     }
                     case "todo" -> {
                         // input format: todo <description>
-                        String description = scanner.nextLine().trim();
-                        if (description.isEmpty()) {
+                        if (arguments.isEmpty()) {
                             throw new ZenException("The description of a Todo cannot be empty. Please try again!");
                         }
 
-                        Task newTodo = new Todo(description);
+                        Task newTodo = new Todo(arguments);
                         addTask(tasks, newTodo);
                     }
                     case "deadline" -> {
                         // input format: deadline <description> /by <dueBy>
-                        String userInput = scanner.nextLine().trim();
-                        Task newDeadline = parseDeadline(userInput);
+                        Task newDeadline = parseDeadline(arguments);
                         addTask(tasks, newDeadline);
                     }
                     case "event" -> {
                         // input format: event <description> /from <start> /to <end>
-                        String userInput = scanner.nextLine().trim();
-                        Task newEvent = parseEvent(userInput);
+                        Task newEvent = parseEvent(arguments);
                         addTask(tasks, newEvent);
                     }
                     default -> {
