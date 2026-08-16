@@ -1013,3 +1013,231 @@ bye
     Bye. See you again soon!
     ____________________________________________________________
 ```
+
+### UI-025 — Interleaved: invalid mark indices preserve a valid task state
+
+**Aim:** Verify that a valid mark operation is retained when zero, out-of-range, and non-numeric mark inputs are rejected between valid commands.
+
+**Inputs:**
+```text
+todo stable task
+mark 1
+mark 0
+mark 2
+mark one
+list
+unmark 1
+list
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+     ______              
+    |__  /___  _ __      
+      / // _ \| '_ \   
+     / /|  __/| | | |    
+    /____\___||_| |_|
+    Hello! I'm Zen.
+    What can I do for you?
+    ____________________________________________________________
+
+    ____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] stable task
+     Now you have 1 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Nice! I've marked this task as done:
+       [T][X] stable task
+    ____________________________________________________________
+    ____________________________________________________________
+     mark index should be positive.
+    ____________________________________________________________
+    ____________________________________________________________
+     Todo only has 1 items, I am unable to mark task 2.
+    ____________________________________________________________
+    ____________________________________________________________
+     Only positive integers are allowed for mark task index.
+    ____________________________________________________________
+    ____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][X] stable task
+    ____________________________________________________________
+    ____________________________________________________________
+     OK, I've marked this task as not done yet:
+       [T][ ] stable task
+    ____________________________________________________________
+    ____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] stable task
+    ____________________________________________________________
+    ____________________________________________________________
+    Bye. See you again soon!
+    ____________________________________________________________
+```
+
+### UI-026 — Interleaved: invalid delete inputs preserve task ordering
+
+**Aim:** Verify that invalid delete indices do not remove a task, and that a later valid delete removes only the selected task.
+
+**Inputs:**
+```text
+todo first
+todo second
+delete 0
+delete 3
+delete two
+list
+delete 1
+list
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+     ______              
+    |__  /___  _ __      
+      / // _ \| '_ \   
+     / /|  __/| | | |    
+    /____\___||_| |_|
+    Hello! I'm Zen.
+    What can I do for you?
+    ____________________________________________________________
+
+    ____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] first
+     Now you have 1 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] second
+     Now you have 2 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     delete index should be positive.
+    ____________________________________________________________
+    ____________________________________________________________
+     Todo only has 2 items, I am unable to delete task 3.
+    ____________________________________________________________
+    ____________________________________________________________
+     Only positive integers are allowed for delete task index.
+    ____________________________________________________________
+    ____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] first
+     2.[T][ ] second
+    ____________________________________________________________
+    ____________________________________________________________
+     Noted. I've removed this task:
+       [T][ ] first
+     Now you have 1 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] second
+    ____________________________________________________________
+    ____________________________________________________________
+    Bye. See you again soon!
+    ____________________________________________________________
+```
+
+### UI-027 — Interleaved: malformed event does not corrupt existing tasks
+
+**Aim:** Verify that an event with `/to` before `/from` is rejected after a valid deadline, and that a later valid event is appended as task 2.
+
+**Inputs:**
+```text
+deadline submit form /by Friday
+event reversed /to Tuesday /from Monday
+event project meeting /from Monday /to Tuesday
+list
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+     ______              
+    |__  /___  _ __      
+      / // _ \| '_ \   
+     / /|  __/| | | |    
+    /____\___||_| |_|
+    Hello! I'm Zen.
+    What can I do for you?
+    ____________________________________________________________
+
+    ____________________________________________________________
+     Got it. I've added this task:
+       [D][ ] submit form (by: Friday)
+     Now you have 1 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     /from must come before /to.
+     Event Format: event <description> /from <start> /to <end>
+    ____________________________________________________________
+    ____________________________________________________________
+     Got it. I've added this task:
+       [E][ ] project meeting (from: Monday to: Tuesday)
+     Now you have 2 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Here are the tasks in your list:
+     1.[D][ ] submit form (by: Friday)
+     2.[E][ ] project meeting (from: Monday to: Tuesday)
+    ____________________________________________________________
+    ____________________________________________________________
+    Bye. See you again soon!
+    ____________________________________________________________
+```
+
+### UI-028 — Interleaved: commands with unexpected arguments preserve tasks
+
+**Aim:** Verify that `list` rejects unexpected arguments without changing an existing task, and that a subsequent valid add and list retain both tasks.
+
+**Inputs:**
+```text
+todo before invalid list
+list extra
+todo after invalid list
+list
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+     ______              
+    |__  /___  _ __      
+      / // _ \| '_ \   
+     / /|  __/| | | |    
+    /____\___||_| |_|
+    Hello! I'm Zen.
+    What can I do for you?
+    ____________________________________________________________
+
+    ____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] before invalid list
+     Now you have 1 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     The list command does not take arguments.
+    ____________________________________________________________
+    ____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] after invalid list
+     Now you have 2 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] before invalid list
+     2.[T][ ] after invalid list
+    ____________________________________________________________
+    ____________________________________________________________
+    Bye. See you again soon!
+    ____________________________________________________________
+```
