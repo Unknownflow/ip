@@ -125,10 +125,10 @@ public class Zen {
             }
 
             String[] parts = input.split("\\s+", 2);
-            String command = parts[0];
+            Command command = Command.fromString(parts[0]);
             String arguments = parts.length == 2 ? parts[1] : "";
 
-            if (command.equals("bye")) {
+            if (command == Command.BYE) {
                 break;
             }
 
@@ -137,26 +137,26 @@ public class Zen {
             try {
                 // AI-assisted: AI suggested using switch instead of if statements
                 switch (command) {
-                    case "list" -> {
+                    case LIST -> {
                         parser.requireNoArguments(arguments, "list");
                         listTasks(tasks);
                     }
-                    case "mark" -> {
+                    case MARK -> {
                         int idx = parser.parseIndex(arguments, "mark");
                         Task task = getTaskAt(tasks, idx, "mark");
                         markTaskDone(task);
                     }
-                    case "unmark" -> {
+                    case UNMARK -> {
                         int idx = parser.parseIndex(arguments, "unmark");
                         Task task = getTaskAt(tasks, idx, "unmark");
                         markTaskNotDone(task);
                     }
-                    case "delete" -> {
+                    case DELETE -> {
                         int idx = parser.parseIndex(arguments, "delete");
                         Task task = getTaskAt(tasks, idx, "delete");
                         deleteTask(tasks, task, idx);
                     }
-                    case "todo" -> {
+                    case TODO -> {
                         // input format: todo <description>
                         if (arguments.isEmpty()) {
                             throw new ZenException("The description of a Todo cannot be empty. Please try again!");
@@ -165,19 +165,18 @@ public class Zen {
                         Task newTodo = new Todo(arguments);
                         addTask(tasks, newTodo);
                     }
-                    case "deadline" -> {
+                    case DEADLINE -> {
                         // input format: deadline <description> /by <dueBy>
                         Task newDeadline = parser.parseDeadline(arguments);
                         addTask(tasks, newDeadline);
                     }
-                    case "event" -> {
+                    case EVENT -> {
                         // input format: event <description> /from <start> /to <end>
                         Task newEvent = parser.parseEvent(arguments);
                         addTask(tasks, newEvent);
                     }
                     default -> {
                         // if the command is not valid, throw an exception
-                        scanner.nextLine();
                         throw new ZenException("Command not found. Please try again!");
                     }
                 }
