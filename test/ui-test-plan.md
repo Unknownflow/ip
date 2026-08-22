@@ -65,7 +65,7 @@ bye
      Command not found. Please try again!
     ____________________________________________________________
     ____________________________________________________________
-     Here are the tasks in your list:
+     Your task list is currently empty.
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!
@@ -136,7 +136,7 @@ bye
      The description of a Todo cannot be empty. Please try again!
     ____________________________________________________________
     ____________________________________________________________
-     Here are the tasks in your list:
+     Your task list is currently empty.
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!
@@ -224,7 +224,7 @@ bye
      The description of a Todo cannot be empty. Please try again!
     ____________________________________________________________
     ____________________________________________________________
-     Here are the tasks in your list:
+     Your task list is currently empty.
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!
@@ -629,7 +629,7 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     Here are the tasks in your list:
+     Your task list is currently empty.
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
@@ -1053,13 +1053,13 @@ bye
        [T][X] stable task
     ____________________________________________________________
     ____________________________________________________________
-     mark index should be positive.
+     Maximum task number is 1.
     ____________________________________________________________
     ____________________________________________________________
-     Todo only has 1 items, I am unable to mark task 2.
+     Maximum task number is 1.
     ____________________________________________________________
     ____________________________________________________________
-     Only positive integers are allowed for mark task index.
+     Only positive integers are allowed for task number.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -1118,13 +1118,13 @@ bye
      Now you have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
-     delete index should be positive.
+     Maximum task number is 2.
     ____________________________________________________________
     ____________________________________________________________
-     Todo only has 2 items, I am unable to delete task 3.
+     Maximum task number is 2.
     ____________________________________________________________
     ____________________________________________________________
-     Only positive integers are allowed for delete task index.
+     Only positive integers are allowed for task number.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -1236,6 +1236,44 @@ bye
      Here are the tasks in your list:
      1.[T][ ] before invalid list
      2.[T][ ] after invalid list
+    ____________________________________________________________
+    ____________________________________________________________
+    Bye. See you again soon!
+    ____________________________________________________________
+```
+
+### UI-029 — Negative: task operations on an empty list are rejected
+
+**Aim:** Verify that mark, unmark, and delete report a clear error without changing an empty task list.
+
+**Inputs:**
+```text
+mark 1
+unmark 1
+delete 1
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+     ______              
+    |__  /___  _ __      
+      / // _ \| '_ \   
+     / /|  __/| | | |    
+    /____\___||_| |_|
+    Hello! I'm Zen.
+    What can I do for you?
+    ____________________________________________________________
+
+    ____________________________________________________________
+     Task list is empty. Add new tasks into task list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Task list is empty. Add new tasks into task list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Task list is empty. Add new tasks into task list.
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!
