@@ -1,6 +1,6 @@
 public class Parser {
-    private static final String DEADLINE_FORMAT = "\n     Deadline Format: deadline <description> /by <due by>";
-    private static final String EVENT_FORMAT = "\n     Event Format: event <description> /from <start> /to <end>";
+    private static final String DEADLINE_FORMAT = "\nDeadline Format: deadline <description> /by <due by>";
+    private static final String EVENT_FORMAT = "\nEvent Format: event <description> /from <start> /to <end>";
 
     /**
      * Validates that no arguments were supplied for a command that expects none.
@@ -16,17 +16,15 @@ public class Parser {
     }
 
     /**
-     * Parses a task index from a user-supplied argument string.
+     * Parses a task number from a user-supplied argument string.
      *
      * @param arguments the raw argument string expected to contain a positive integer.
-     * @param action    a description of the action being performed, used in the error message
-     *                  if parsing fails (e.g. "delete", "mark", "unmark").
      * @return the parsed index as an integer.
      * @throws ZenException if {@code arguments} is not a positive integer.
      */
-    public int parseIndex(String arguments, String action) throws ZenException {
+    public int parseTaskNumber(String arguments) throws ZenException {
         if (!arguments.matches("\\d+")) {
-            throw new ZenException("Only positive integers are allowed for " + action + " task index.");
+            throw new ZenException("Only positive integers are allowed for task number.");
         }
         return Integer.parseInt(arguments);
     }
