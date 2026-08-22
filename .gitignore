@@ -21,3 +21,7 @@ text-ui-test/EXPECTED-UNIX.TXT
 
 # Compiled class files
 *.class
+
+# Runtime task-list storage
+task_list.txt
+/data/

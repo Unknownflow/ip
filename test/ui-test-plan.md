@@ -6,7 +6,8 @@
 - **Java version:** `25`
 - **Source directory:** `src/main/java`
 - **Compile behavior:** The `test-ui` skill compiles all Java sources with `javac --release 25` into `out/ui-test` before running cases.
-- **Isolation:** Each test case starts a fresh `Zen` process.
+- **Isolation:** Each automated test case starts a fresh `Zen` process with an empty, pre-existing `data/task_list.txt` file, unless its case provides storage data.
+- **First-run storage check:** Before release, manually run the application from a working directory that contains neither `data/` nor `data/task_list.txt`. Enter `todo first task`, then `bye`. Verify that the application continues normally and creates `data/task_list.txt` containing `T | 0 | first task`. This manual check is required because the automated runner deliberately pre-creates the storage file for every case.
 - **Comparison:** Expected output is exact after normalizing line endings and ignoring only the final line-ending produced by the process.
 - **Failure policy:** Stop immediately at the first failed case and report both expected and actual output.
 
@@ -65,7 +66,7 @@ bye
      Command not found. Please try again!
     ____________________________________________________________
     ____________________________________________________________
-     Here are the tasks in your list:
+     Your task list is currently empty.
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!
@@ -136,7 +137,7 @@ bye
      The description of a Todo cannot be empty. Please try again!
     ____________________________________________________________
     ____________________________________________________________
-     Here are the tasks in your list:
+     Your task list is currently empty.
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!
@@ -224,7 +225,7 @@ bye
      The description of a Todo cannot be empty. Please try again!
     ____________________________________________________________
     ____________________________________________________________
-     Here are the tasks in your list:
+     Your task list is currently empty.
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!
@@ -629,7 +630,7 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     Here are the tasks in your list:
+     Your task list is currently empty.
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
@@ -1014,6 +1015,58 @@ bye
     ____________________________________________________________
 ```
 
+### UI-030 — Positive: all task-list changes retain their console behaviour
+
+**Aim:** Verify that adding, marking, unmarking, and deleting tasks (the operations that now trigger automatic saving) retain the expected task-list state and console output.
+
+**Inputs:**
+```text
+todo saved task
+mark 1
+unmark 1
+delete 1
+list
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+     ______              
+    |__  /___  _ __      
+      / // _ \| '_ \   
+     / /|  __/| | | |    
+    /____\___||_| |_|
+    Hello! I'm Zen.
+    What can I do for you?
+    ____________________________________________________________
+
+    ____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] saved task
+     Now you have 1 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Nice! I've marked this task as done:
+       [T][X] saved task
+    ____________________________________________________________
+    ____________________________________________________________
+     OK, I've marked this task as not done yet:
+       [T][ ] saved task
+    ____________________________________________________________
+    ____________________________________________________________
+     Noted. I've removed this task:
+       [T][ ] saved task
+     Now you have 0 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Your task list is currently empty.
+    ____________________________________________________________
+    ____________________________________________________________
+    Bye. See you again soon!
+    ____________________________________________________________
+```
+
 ### UI-025 — Interleaved: invalid mark indices preserve a valid task state
 
 **Aim:** Verify that a valid mark operation is retained when zero, out-of-range, and non-numeric mark inputs are rejected between valid commands.
@@ -1053,13 +1106,13 @@ bye
        [T][X] stable task
     ____________________________________________________________
     ____________________________________________________________
-     mark index should be positive.
+     Maximum task number is 1.
     ____________________________________________________________
     ____________________________________________________________
-     Todo only has 1 items, I am unable to mark task 2.
+     Maximum task number is 1.
     ____________________________________________________________
     ____________________________________________________________
-     Only positive integers are allowed for mark task index.
+     Only positive integers are allowed for task number.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -1118,13 +1171,13 @@ bye
      Now you have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
-     delete index should be positive.
+     Maximum task number is 2.
     ____________________________________________________________
     ____________________________________________________________
-     Todo only has 2 items, I am unable to delete task 3.
+     Maximum task number is 2.
     ____________________________________________________________
     ____________________________________________________________
-     Only positive integers are allowed for delete task index.
+     Only positive integers are allowed for task number.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -1236,6 +1289,84 @@ bye
      Here are the tasks in your list:
      1.[T][ ] before invalid list
      2.[T][ ] after invalid list
+    ____________________________________________________________
+    ____________________________________________________________
+    Bye. See you again soon!
+    ____________________________________________________________
+```
+
+### UI-031 — Positive: load tasks saved on disk
+
+**Aim:** Verify that tasks in the pipe-delimited storage file are loaded at startup with their types, completion status, and date/time details preserved.
+
+**Storage data:**
+```text
+T | 1 | read book
+D | 0 | return book | June 6th
+E | 0 | project meeting | Aug 6th 2pm to 4pm
+```
+
+**Inputs:**
+```text
+list
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+     ______              
+    |__  /___  _ __      
+      / // _ \| '_ \   
+     / /|  __/| | | |    
+    /____\___||_| |_|
+    Hello! I'm Zen.
+    What can I do for you?
+    ____________________________________________________________
+
+    ____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][X] read book
+     2.[D][ ] return book (by: June 6th)
+     3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+    ____________________________________________________________
+    ____________________________________________________________
+    Bye. See you again soon!
+    ____________________________________________________________
+```
+
+### UI-029 — Negative: task operations on an empty list are rejected
+
+**Aim:** Verify that mark, unmark, and delete report a clear error without changing an empty task list.
+
+**Inputs:**
+```text
+mark 1
+unmark 1
+delete 1
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+     ______              
+    |__  /___  _ __      
+      / // _ \| '_ \   
+     / /|  __/| | | |    
+    /____\___||_| |_|
+    Hello! I'm Zen.
+    What can I do for you?
+    ____________________________________________________________
+
+    ____________________________________________________________
+     Task list is empty. Add new tasks into task list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Task list is empty. Add new tasks into task list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Task list is empty. Add new tasks into task list.
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!

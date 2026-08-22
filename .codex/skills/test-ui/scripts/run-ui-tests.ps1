@@ -21,13 +21,22 @@ function Normalize-Output([string] $Text) {
 }
 
 function Get-PlanField([string] $CaseBody, [string] $FieldName) {
-    $pattern = "(?ms)^\*\*" + [regex]::Escape($FieldName) + ":\*\*\s*(.*?)(?=^\*\*(?:Aim|Inputs|Expected output|Notes):\*\*|\z)"
+    $pattern = "(?ms)^\*\*" + [regex]::Escape($FieldName) + ":\*\*\s*(.*?)(?=^\*\*(?:Aim|Storage data|Inputs|Expected output|Notes):\*\*|\z)"
     $match = [regex]::Match($CaseBody, $pattern)
     if (-not $match.Success) {
         throw "Missing **${FieldName}:** in test case."
     }
 
     return $match.Groups[1].Value.Trim()
+}
+
+function Get-StorageData([string] $CaseBody) {
+    $match = [regex]::Match($CaseBody, '(?ms)^\*\*Storage data:\*\*\s*```(?:text|console)?\s*\r?\n(.*?)\r?\n```')
+    if ($match.Success) {
+        return $match.Groups[1].Value
+    }
+
+    return ""
 }
 
 function Get-FencedContent([string] $FieldText, [string] $FieldName) {
@@ -51,6 +60,7 @@ function Read-TestCases([string] $Path) {
         $cases += [pscustomobject]@{
             Name = $match.Groups[1].Value.Trim()
             Aim = Get-PlanField $match.Groups[2].Value "Aim"
+            StorageData = Get-StorageData $match.Groups[2].Value
             Inputs = Get-FencedContent (Get-PlanField $match.Groups[2].Value "Inputs") "Inputs"
             Expected = Get-FencedContent (Get-PlanField $match.Groups[2].Value "Expected output") "Expected output"
         }
@@ -136,6 +146,9 @@ Write-Output ""
 
 $passed = 0
 foreach ($testCase in $cases) {
+    New-Item -ItemType Directory -Force -Path "data" | Out-Null
+    Set-Content -LiteralPath "data\task_list.txt" -Value $testCase.StorageData -NoNewline
+
     Write-Output "=== $($testCase.Name) ==="
     Write-Output "Aim: $($testCase.Aim)"
     Write-Output "--- Console input ---"
