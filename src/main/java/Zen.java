@@ -1,10 +1,12 @@
 import java.util.Scanner;
 
 public class Zen {
+    private static final String FILE_PATH = "data/task_list.txt";
+
     public static void main(String[] args) throws ZenException {
         Parser parser = new Parser();
         Ui ui = new Ui();
-        Storage storage = new Storage("data/task_list.txt");
+        Storage storage = new Storage(FILE_PATH);
         TaskList taskList = null;
 
         Scanner scanner = new Scanner(System.in);
