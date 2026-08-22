@@ -2,11 +2,20 @@ import java.util.Scanner;
 
 public class Zen {
     public static void main(String[] args) throws ZenException {
-        TaskList taskList = new TaskList();
         Parser parser = new Parser();
         Ui ui = new Ui();
+        Storage storage = new Storage("data/task_list.txt");
+        TaskList taskList = null;
+
         Scanner scanner = new Scanner(System.in);
         ui.printGreeting();
+
+        try {
+            taskList = storage.load();
+        } catch (ZenException e) {
+            ui.printErrorMessage(e.getMessage());
+            System.exit(0);
+        }
 
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine().trim();
@@ -20,6 +29,7 @@ public class Zen {
             String arguments = parts.length == 2 ? parts[1] : "";
 
             if (command == Command.BYE) {
+                ui.printExitMessage();
                 break;
             }
 
@@ -35,16 +45,19 @@ public class Zen {
                     case MARK -> {
                         int taskNum = parser.parseTaskNumber(arguments);
                         Task task = taskList.markTask(taskNum);
+                        storage.save(taskList);
                         ui.printMarkTaskDone(task);
                     }
                     case UNMARK -> {
                         int taskNum = parser.parseTaskNumber(arguments);
                         Task task = taskList.unmarkTask(taskNum);
+                        storage.save(taskList);
                         ui.printMarkTaskNotDone(task);
                     }
                     case DELETE -> {
                         int taskNum = parser.parseTaskNumber(arguments);
                         Task deletedTask = taskList.deleteTask(taskNum);
+                        storage.save(taskList);
                         ui.printDeleteTask(deletedTask, taskList.size());
                     }
                     case TODO -> {
@@ -55,18 +68,21 @@ public class Zen {
 
                         Task newTodo = new Todo(arguments);
                         taskList.addTask(newTodo);
+                        storage.save(taskList);
                         ui.printAddTask(newTodo, taskList.size());
                     }
                     case DEADLINE -> {
                         // input format: deadline <description> /by <dueBy>
                         Task newDeadline = parser.parseDeadline(arguments);
                         taskList.addTask(newDeadline);
+                        storage.save(taskList);
                         ui.printAddTask(newDeadline, taskList.size());
                     }
                     case EVENT -> {
                         // input format: event <description> /from <start> /to <end>
                         Task newEvent = parser.parseEvent(arguments);
                         taskList.addTask(newEvent);
+                        storage.save(taskList);
                         ui.printAddTask(newEvent, taskList.size());
                     }
                     default -> {
@@ -82,6 +98,5 @@ public class Zen {
         }
 
         scanner.close();
-        ui.printExitMessage();
     }
 }

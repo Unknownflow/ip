@@ -86,4 +86,13 @@ public class Ui {
                 """.formatted(INDENTED_DIVIDER, INDENTED_DIVIDER);
         System.out.println(exitMessage);
     }
+
+    public void printErrorMessage(String errorMessage) {
+        String exitMessage = """
+                %s
+                    Error occurred: %s
+                %s
+                """.formatted(INDENTED_DIVIDER, errorMessage, INDENTED_DIVIDER);
+        System.out.println(exitMessage);
+    }
 }

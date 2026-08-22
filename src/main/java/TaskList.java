@@ -61,6 +61,24 @@ public class TaskList {
         return this.tasks.isEmpty();
     }
 
+    /**
+     * Returns all tasks as newline-separated records for persistent storage.
+     *
+     * @return pipe-delimited task records, one per line
+     */
+    public String toStorageString() {
+        StringBuilder output = new StringBuilder();
+
+        for (int i = 0; i < this.tasks.size(); i++) {
+            output.append(this.tasks.get(i).toStorageString());
+            if (i < this.tasks.size() - 1) {
+                output.append("\n");
+            }
+        }
+
+        return output.toString();
+    }
+
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
