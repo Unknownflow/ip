@@ -94,6 +94,6 @@ public class Storage {
      */
     private Event createEvent(String description, String timing) {
         String[] times = timing.split(" to ", 2);
-        return new Event(description, times[0], times[1]);
+        return new Event(description, LocalDateTime.parse(times[0]), LocalDateTime.parse(times[1]));
     }
 }

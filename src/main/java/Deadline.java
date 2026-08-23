@@ -3,7 +3,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Deadline extends Task {
     protected LocalDateTime dueBy;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm:ss");
 
     public Deadline(String description, LocalDateTime dueBy) {
         super(description);
@@ -22,6 +22,6 @@ public class Deadline extends Task {
 
     @Override
     public String toString() {
-        return String.format("[D]%s (by: %s)", super.toString(), this.dueBy.format(formatter));
+        return String.format("[D]%s (by: %s)", super.toString(), this.dueBy.format(FORMATTER));
     }
 }
