@@ -1,0 +1,214 @@
+package zen.command;
+
+import org.junit.jupiter.api.Test;
+import zen.ZenException;
+import zen.task.Deadline;
+import zen.task.Event;
+
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+/**
+ * Tests parsing and validation of user command input.
+ */
+public class ParserTest {
+    private static final String DEADLINE_FORMAT = "\nDeadline Format: deadline <description> /by yyyy-MM-dd HH:mm:ss";
+    private static final String EVENT_FORMAT = "\nEvent Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss";
+
+    // AI-assisted
+    @Test
+    public void parse_knownCommandKeywords_returnsMatchingCommandTypes() {
+        assertInstanceOf(ListCommand.class, Parser.parse("list"));
+        assertInstanceOf(MarkCommand.class, Parser.parse("mark 1"));
+        assertInstanceOf(UnmarkCommand.class, Parser.parse("unmark 1"));
+        assertInstanceOf(OccurCommand.class, Parser.parse("occur 2026-10-10"));
+        assertInstanceOf(DeleteCommand.class, Parser.parse("delete 1"));
+        assertInstanceOf(TodoCommand.class, Parser.parse("todo buy milk"));
+        assertInstanceOf(DeadlineCommand.class, Parser.parse("deadline submit /by 2026-10-10 10:30:00"));
+        assertInstanceOf(EventCommand.class, Parser.parse("event party /from 2026-10-10 10:30:00 /to 2026-10-10 11:30:00"));
+        assertInstanceOf(ExitCommand.class, Parser.parse("bye"));
+    }
+
+    // AI-assisted
+    @Test
+    public void parse_mixedCaseCommandWithExtraWhitespace_returnsMatchingCommandType() {
+        assertInstanceOf(TodoCommand.class, Parser.parse("  ToDo   buy milk  "));
+    }
+
+    // AI-assisted
+    @Test
+    public void parse_emptyOrUnknownCommand_returnsUnknownCommand() {
+        assertInstanceOf(UnknownCommand.class, Parser.parse(""));
+        assertInstanceOf(UnknownCommand.class, Parser.parse("remind me"));
+    }
+
+    // AI-assisted
+    @Test
+    public void requireNoArguments_emptyArguments_doesNotThrow() throws ZenException {
+        Parser.requireNoArguments("", "list");
+    }
+
+    // AI-assisted
+    @Test
+    public void requireNoArguments_nonEmptyArguments_throwsHelpfulException() {
+        ZenException exception = assertThrows(ZenException.class,
+                () -> Parser.requireNoArguments("today", "list"));
+
+        assertEquals("The list command does not take arguments.", exception.getMessage());
+    }
+
+    // AI-assisted
+    @Test
+    public void parseDate_validIsoDate_returnsDate() throws ZenException {
+        assertEquals(LocalDate.of(2026, 10, 10), Parser.parseDate("2026-10-10"));
+    }
+
+    // AI-assisted
+    @Test
+    public void parseDate_malformedOrImpossibleDate_throwsHelpfulException() {
+        ZenException malformedException = assertThrows(ZenException.class,
+                () -> Parser.parseDate("10-10-2026"));
+        ZenException impossibleException = assertThrows(ZenException.class,
+                () -> Parser.parseDate("2026-02-30"));
+
+        String expectedMessage = "The date is in the incorrect format.\n Correct format: yyyy-MM-dd";
+        assertEquals(expectedMessage, malformedException.getMessage());
+        assertEquals(expectedMessage, impossibleException.getMessage());
+    }
+
+    // AI-assisted
+    @Test
+    public void parseTaskNumber_digitsOnly_returnsTaskNumber() throws ZenException {
+        assertEquals(42, Parser.parseTaskNumber("42"));
+    }
+
+    // AI-assisted
+    @Test
+    public void parseTaskNumber_nonDigitInput_throwsHelpfulException() {
+        for (String invalidInput : new String[] {"", "-1", "1.5", "one"}) {
+            ZenException exception = assertThrows(ZenException.class, () -> Parser.parseTaskNumber(invalidInput));
+            assertEquals("Only positive integers are allowed for task number.", exception.getMessage());
+        }
+    }
+
+    // AI-assisted
+    @Test
+    public void parseDeadline_validInputWithWhitespace_returnsDeadline() throws ZenException {
+        Deadline deadline = Parser.parseDeadline("  submit assignment  /by  2026-10-10 10:30:00  ");
+
+        assertEquals("D | 0 | submit assignment | 2026-10-10T10:30", deadline.toStorageString());
+    }
+
+    // AI-assisted
+    @Test
+    public void parseDeadline_missingMarker_throwsHelpfulException() {
+        ZenException exception = assertThrows(ZenException.class,
+                () -> Parser.parseDeadline("submit assignment"));
+
+        assertEquals("Please include /by in your event to separate description and due by." + DEADLINE_FORMAT,
+                exception.getMessage());
+    }
+
+    // AI-assisted
+    @Test
+    public void parseDeadline_duplicateMarker_throwsHelpfulException() {
+        ZenException exception = assertThrows(ZenException.class,
+                () -> Parser.parseDeadline("submit /by 2026-10-10 10:30:00 /by 2026-10-11 10:30:00"));
+
+        assertEquals("Please include only one /by in your event to separate description and due by." + DEADLINE_FORMAT,
+                exception.getMessage());
+    }
+
+    // AI-assisted
+    @Test
+    public void parseDeadline_emptyDescriptionOrDueDate_throwsHelpfulException() {
+        ZenException emptyDescription = assertThrows(ZenException.class,
+                () -> Parser.parseDeadline(" /by 2026-10-10 10:30:00"));
+        ZenException emptyDueDate = assertThrows(ZenException.class,
+                () -> Parser.parseDeadline("submit /by  "));
+
+        assertEquals("The description of a Deadline cannot be empty. Please try again!" + DEADLINE_FORMAT,
+                emptyDescription.getMessage());
+        assertEquals("The due by date / time cannot be empty. Please try again!" + DEADLINE_FORMAT,
+                emptyDueDate.getMessage());
+    }
+
+    // AI-assisted
+    @Test
+    public void parseDeadline_invalidDateTime_throwsHelpfulException() {
+        ZenException exception = assertThrows(ZenException.class,
+                () -> Parser.parseDeadline("submit /by 2026-10-10"));
+
+        assertEquals("The due by datetime is in the incorrect format." + DEADLINE_FORMAT, exception.getMessage());
+    }
+
+    // AI-assisted
+    @Test
+    public void parseEvent_validInputWithEqualStartAndEnd_returnsEvent() throws ZenException {
+        Event event = Parser.parseEvent("  meeting  /from 2026-10-10 10:30:00 /to 2026-10-10 10:30:00  ");
+
+        assertEquals("E | 0 | meeting | 2026-10-10T10:30 to 2026-10-10T10:30", event.toStorageString());
+    }
+
+    // AI-assisted
+    @Test
+    public void parseEvent_missingMarkersOrMarkersInWrongOrder_throwsHelpfulException() {
+        ZenException missingFrom = assertThrows(ZenException.class,
+                () -> Parser.parseEvent("meeting /to 2026-10-10 11:30:00"));
+        ZenException missingTo = assertThrows(ZenException.class,
+                () -> Parser.parseEvent("meeting /from 2026-10-10 10:30:00"));
+        ZenException wrongOrder = assertThrows(ZenException.class,
+                () -> Parser.parseEvent("meeting /to 2026-10-10 11:30:00 /from 2026-10-10 10:30:00"));
+
+        assertEquals("Please include /from in your event to separate description and timings." + EVENT_FORMAT,
+                missingFrom.getMessage());
+        assertEquals("Please include /to in your event." + EVENT_FORMAT, missingTo.getMessage());
+        assertEquals("/from must come before /to." + EVENT_FORMAT, wrongOrder.getMessage());
+    }
+
+    // AI-assisted
+    @Test
+    public void parseEvent_duplicateMarkers_throwsHelpfulException() {
+        ZenException duplicateFrom = assertThrows(ZenException.class,
+                () -> Parser.parseEvent("meeting /from 2026-10-10 10:30:00 /from 2026-10-10 11:00:00 /to 2026-10-10 11:30:00"));
+        ZenException duplicateTo = assertThrows(ZenException.class,
+                () -> Parser.parseEvent("meeting /from 2026-10-10 10:30:00 /to 2026-10-10 11:00:00 /to 2026-10-10 11:30:00"));
+
+        assertEquals("Please include only 1 /from in your event." + EVENT_FORMAT, duplicateFrom.getMessage());
+        assertEquals("Please include only 1 /to in your event." + EVENT_FORMAT, duplicateTo.getMessage());
+    }
+
+    // AI-assisted
+    @Test
+    public void parseEvent_emptyDescriptionStartOrEnd_throwsHelpfulException() {
+        ZenException emptyDescription = assertThrows(ZenException.class,
+                () -> Parser.parseEvent(" /from 2026-10-10 10:30:00 /to 2026-10-10 11:30:00"));
+        ZenException emptyStart = assertThrows(ZenException.class,
+                () -> Parser.parseEvent("meeting /from  /to 2026-10-10 11:30:00"));
+        ZenException emptyEnd = assertThrows(ZenException.class,
+                () -> Parser.parseEvent("meeting /from 2026-10-10 10:30:00 /to  "));
+
+        assertEquals("The description of an Event cannot be empty. Please try again." + EVENT_FORMAT,
+                emptyDescription.getMessage());
+        assertEquals("The start time of an Event cannot be empty. Please try again!" + EVENT_FORMAT,
+                emptyStart.getMessage());
+        assertEquals("The end time of an Event cannot be empty. Please try again!" + EVENT_FORMAT,
+                emptyEnd.getMessage());
+    }
+
+    // AI-assisted
+    @Test
+    public void parseEvent_invalidDateTimeOrStartAfterEnd_throwsHelpfulException() {
+        ZenException invalidDateTime = assertThrows(ZenException.class,
+                () -> Parser.parseEvent("meeting /from not-a-date /to 2026-10-10 11:30:00"));
+        ZenException startAfterEnd = assertThrows(ZenException.class,
+                () -> Parser.parseEvent("meeting /from 2026-10-10 12:30:00 /to 2026-10-10 11:30:00"));
+
+        assertEquals("The start / end datetime is in the incorrect format." + EVENT_FORMAT,
+                invalidDateTime.getMessage());
+        assertEquals("The start datetime is after the end datetime." + EVENT_FORMAT, startAfterEnd.getMessage());
+    }
+}
