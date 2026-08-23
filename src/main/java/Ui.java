@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Ui {
     private static final String DIVIDER = "____________________________________________________________";
     private static final String NAME = "Zen";
@@ -10,6 +12,15 @@ public class Ui {
                  / /|  __/| | | |   \s
                 /____\\___||_| |_|\
             """;
+    private final Scanner scanner;
+
+    public Ui() {
+        this.scanner = new Scanner(System.in);
+    }
+
+    public String readCommand() {
+        return scanner.nextLine().trim();
+    }
 
     private static void printIndented(String... lines) {
         for (String line: lines) {
@@ -79,12 +90,8 @@ public class Ui {
     }
 
     public void printExitMessage() {
-        String exitMessage = """
-                %s
-                    Bye. See you again soon!
-                %s
-                """.formatted(INDENTED_DIVIDER, INDENTED_DIVIDER);
-        System.out.println(exitMessage);
+        echo("Bye. See you again soon!");
+        scanner.close();
     }
 
     public void printErrorMessage(String errorMessage) {
