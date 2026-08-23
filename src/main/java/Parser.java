@@ -1,6 +1,11 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Parser {
-    private static final String DEADLINE_FORMAT = "\nDeadline Format: deadline <description> /by <due by>";
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String DEADLINE_FORMAT = "\nDeadline Format: deadline <description> /by " + DATE_TIME_FORMAT;
     private static final String EVENT_FORMAT = "\nEvent Format: event <description> /from <start> /to <end>";
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 
     /**
      * Validates that no arguments were supplied for a command that expects none.
@@ -65,7 +70,13 @@ public class Parser {
                     + DEADLINE_FORMAT);
         }
 
-        return new Deadline(description, dueBy);
+        try {
+            LocalDateTime date = LocalDateTime.parse(dueBy, DATE_TIME_FORMATTER);
+            return new Deadline(description, date);
+        } catch (Exception e) {
+            throw new ZenException("The due by datetime is in the incorrect format."
+                    + DEADLINE_FORMAT);
+        }
     }
 
     /**

@@ -1,7 +1,11 @@
-public class Deadline extends Task {
-    protected String dueBy;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-    public Deadline(String description, String dueBy) {
+public class Deadline extends Task {
+    protected LocalDateTime dueBy;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm:ss");
+
+    public Deadline(String description, LocalDateTime dueBy) {
         super(description);
         this.dueBy = dueBy;
     }
@@ -13,11 +17,11 @@ public class Deadline extends Task {
      */
     @Override
     public String toStorageString() {
-        return String.format("D | %d | %s | %s", this.isDone ? 1 : 0, this.description, this.dueBy);
+        return String.format("D | %d | %s | %s", this.isDone ? 1 : 0, this.description, this.dueBy.toString());
     }
 
     @Override
     public String toString() {
-        return String.format("[D]%s (by: %s)", super.toString(), this.dueBy);
+        return String.format("[D]%s (by: %s)", super.toString(), this.dueBy.format(formatter));
     }
 }
