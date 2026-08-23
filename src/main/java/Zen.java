@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Zen {
@@ -55,6 +56,12 @@ public class Zen {
                         Task task = taskList.unmarkTask(taskNum);
                         storage.save(taskList);
                         ui.printMarkTaskNotDone(task);
+                    }
+                    case OCCUR -> {
+                        LocalDate date = parser.parseDate(arguments);
+                        TaskList tasks = taskList.getAllTasksOnDate(date);
+                        ui.echo("Tasks for " + date);
+                        ui.printTaskList(tasks);
                     }
                     case DELETE -> {
                         int taskNum = parser.parseTaskNumber(arguments);

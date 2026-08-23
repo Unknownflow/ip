@@ -150,8 +150,8 @@ bye
 
 **Inputs:**
 ```text
-deadline submit report /by Friday
-event team meeting /from Monday /to Tuesday
+deadline submit report /by 2026-08-24 18:00:00
+event team meeting /from 2026-08-24 09:00:00 /to 2026-08-24 10:00:00
 list
 bye
 ```
@@ -170,18 +170,18 @@ bye
 
     ____________________________________________________________
      Got it. I've added this task:
-       [D][ ] submit report (by: Friday)
+       [D][ ] submit report (by: Aug 24 2026 18:00:00)
      Now you have 1 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
-       [E][ ] team meeting (from: Monday to: Tuesday)
+       [E][ ] team meeting (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00)
      Now you have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
-     1.[D][ ] submit report (by: Friday)
-     2.[E][ ] team meeting (from: Monday to: Tuesday)
+     1.[D][ ] submit report (by: Aug 24 2026 18:00:00)
+     2.[E][ ] team meeting (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00)
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!
@@ -215,11 +215,11 @@ bye
 
     ____________________________________________________________
      Please include /by in your event to separate description and due by.
-     Deadline Format: deadline <description> /by <due by>
+     Deadline Format: deadline <description> /by yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Please include /to in your event.
-     Event Format: event <description> /from <start> /to <end>
+     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      The description of a Todo cannot be empty. Please try again!
@@ -400,7 +400,7 @@ bye
 
     ____________________________________________________________
      Please include only one /by in your event to separate description and due by.
-     Deadline Format: deadline <description> /by <due by>
+     Deadline Format: deadline <description> /by yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
@@ -422,7 +422,7 @@ bye
 
 **Inputs:**
 ```text
-event project sync /from 09:00 /to 10:30
+event project sync /from 2026-08-24 09:00:00 /to 2026-08-24 10:30:00
 list
 bye
 ```
@@ -441,12 +441,12 @@ bye
 
     ____________________________________________________________
      Got it. I've added this task:
-       [E][ ] project sync (from: 09:00 to: 10:30)
+       [E][ ] project sync (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:30:00)
      Now you have 1 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
-     1.[E][ ] project sync (from: 09:00 to: 10:30)
+     1.[E][ ] project sync (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:30:00)
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!
@@ -459,8 +459,8 @@ bye
 
 **Inputs:**
 ```text
-event /from Monday /to Tuesday
-event sync /from /to Tuesday
+event /from 2026-08-24 09:00:00 /to 2026-08-24 10:00:00
+event sync /from /to 2026-08-24 10:00:00
 todo recovered event
 list
 bye
@@ -480,11 +480,11 @@ bye
 
     ____________________________________________________________
      The description of an Event cannot be empty. Please try again.
-     Event Format: event <description> /from <start> /to <end>
+     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      The start time of an Event cannot be empty. Please try again!
-     Event Format: event <description> /from <start> /to <end>
+     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
@@ -693,7 +693,7 @@ bye
 
 **Inputs:**
 ```text
-deadline   pay bills   /by   Friday evening
+deadline   pay bills   /by   2026-08-24 18:00:00
 list
 bye
 ```
@@ -712,12 +712,12 @@ bye
 
     ____________________________________________________________
      Got it. I've added this task:
-       [D][ ] pay bills (by: Friday evening)
+       [D][ ] pay bills (by: Aug 24 2026 18:00:00)
      Now you have 1 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
-     1.[D][ ] pay bills (by: Friday evening)
+     1.[D][ ] pay bills (by: Aug 24 2026 18:00:00)
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!
@@ -750,7 +750,7 @@ bye
 
     ____________________________________________________________
      The description of a Deadline cannot be empty. Please try again!
-     Deadline Format: deadline <description> /by <due by>
+     Deadline Format: deadline <description> /by yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
@@ -772,7 +772,7 @@ bye
 
 **Inputs:**
 ```text
-event   design review   /from   09:00   /to   10:00
+event   design review   /from   2026-08-24 09:00:00   /to   2026-08-24 10:00:00
 list
 bye
 ```
@@ -791,12 +791,12 @@ bye
 
     ____________________________________________________________
      Got it. I've added this task:
-       [E][ ] design review (from: 09:00 to: 10:00)
+       [E][ ] design review (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00)
      Now you have 1 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
-     1.[E][ ] design review (from: 09:00 to: 10:00)
+     1.[E][ ] design review (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00)
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!
@@ -810,7 +810,7 @@ bye
 **Inputs:**
 ```text
 event sync /from Monday /to Tuesday /to Wednesday
-event recovered /from Monday /to Tuesday
+event recovered /from 2026-08-24 09:00:00 /to 2026-08-24 10:00:00
 list
 bye
 ```
@@ -829,16 +829,16 @@ bye
 
     ____________________________________________________________
      Please include only 1 /to in your event.
-     Event Format: event <description> /from <start> /to <end>
+     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
-       [E][ ] recovered (from: Monday to: Tuesday)
+       [E][ ] recovered (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00)
      Now you have 1 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
-     1.[E][ ] recovered (from: Monday to: Tuesday)
+     1.[E][ ] recovered (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00)
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!
@@ -908,7 +908,7 @@ bye
 
     ____________________________________________________________
      The start time of an Event cannot be empty. Please try again!
-     Event Format: event <description> /from <start> /to <end>
+     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
@@ -999,7 +999,7 @@ bye
 
     ____________________________________________________________
      The end time of an Event cannot be empty. Please try again!
-     Event Format: event <description> /from <start> /to <end>
+     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
@@ -1204,9 +1204,9 @@ bye
 
 **Inputs:**
 ```text
-deadline submit form /by Friday
+deadline submit form /by 2026-08-24 18:00:00
 event reversed /to Tuesday /from Monday
-event project meeting /from Monday /to Tuesday
+event project meeting /from 2026-08-24 09:00:00 /to 2026-08-24 10:00:00
 list
 bye
 ```
@@ -1225,22 +1225,22 @@ bye
 
     ____________________________________________________________
      Got it. I've added this task:
-       [D][ ] submit form (by: Friday)
+       [D][ ] submit form (by: Aug 24 2026 18:00:00)
      Now you have 1 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      /from must come before /to.
-     Event Format: event <description> /from <start> /to <end>
+     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
-       [E][ ] project meeting (from: Monday to: Tuesday)
+       [E][ ] project meeting (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00)
      Now you have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
-     1.[D][ ] submit form (by: Friday)
-     2.[E][ ] project meeting (from: Monday to: Tuesday)
+     1.[D][ ] submit form (by: Aug 24 2026 18:00:00)
+     2.[E][ ] project meeting (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00)
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!
@@ -1302,8 +1302,8 @@ bye
 **Storage data:**
 ```text
 T | 1 | read book
-D | 0 | return book | June 6th
-E | 0 | project meeting | Aug 6th 2pm to 4pm
+D | 0 | return book | 2026-08-24T18:00
+E | 0 | project meeting | 2026-08-24T14:00 to 2026-08-24T16:00
 ```
 
 **Inputs:**
@@ -1327,8 +1327,121 @@ bye
     ____________________________________________________________
      Here are the tasks in your list:
      1.[T][X] read book
-     2.[D][ ] return book (by: June 6th)
-     3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+     2.[D][ ] return book (by: Aug 24 2026 18:00:00)
+     3.[E][ ] project meeting (from: Aug 24 2026 14:00:00 to: Aug 24 2026 16:00:00)
+    ____________________________________________________________
+    ____________________________________________________________
+    Bye. See you again soon!
+    ____________________________________________________________
+```
+
+### UI-032 — Positive and negative: find tasks occurring on a date
+
+**Aim:** Verify that `occur` includes deadlines due on the requested date and events spanning that date, excludes todos, handles a date without matches, and rejects malformed dates.
+
+**Inputs:**
+```text
+deadline submit report /by 2026-08-24 18:00:00
+event overnight deployment /from 2026-08-23 23:00:00 /to 2026-08-24 01:00:00
+todo unrelated
+occur 2026-08-24
+occur 2026-08-25
+occur 2026/08/24
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+     ______              
+    |__  /___  _ __      
+      / // _ \| '_ \   
+     / /|  __/| | | |    
+    /____\___||_| |_|
+    Hello! I'm Zen.
+    What can I do for you?
+    ____________________________________________________________
+
+    ____________________________________________________________
+     Got it. I've added this task:
+       [D][ ] submit report (by: Aug 24 2026 18:00:00)
+     Now you have 1 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Got it. I've added this task:
+       [E][ ] overnight deployment (from: Aug 23 2026 23:00:00 to: Aug 24 2026 01:00:00)
+     Now you have 2 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] unrelated
+     Now you have 3 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Tasks for 2026-08-24
+     Here are the tasks in your list:
+     1.[D][ ] submit report (by: Aug 24 2026 18:00:00)
+     2.[E][ ] overnight deployment (from: Aug 23 2026 23:00:00 to: Aug 24 2026 01:00:00)
+    ____________________________________________________________
+    ____________________________________________________________
+     Tasks for 2026-08-25
+     Your task list is currently empty.
+    ____________________________________________________________
+    ____________________________________________________________
+     The date is in the incorrect format.
+      Correct format: yyyy-MM-dd
+    ____________________________________________________________
+    ____________________________________________________________
+    Bye. See you again soon!
+    ____________________________________________________________
+```
+
+### UI-033 — Negative: invalid date-times do not add tasks
+
+**Aim:** Verify that malformed deadline and event date-times, including an event that ends before it starts, are rejected without changing subsequent task state.
+
+**Inputs:**
+```text
+deadline invalid /by 2026-08-24
+event malformed /from 2026-08-24 09:00:00 /to tomorrow
+event backwards /from 2026-08-24 10:00:00 /to 2026-08-24 09:00:00
+todo recovered
+list
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+     ______              
+    |__  /___  _ __      
+      / // _ \| '_ \   
+     / /|  __/| | | |    
+    /____\___||_| |_|
+    Hello! I'm Zen.
+    What can I do for you?
+    ____________________________________________________________
+
+    ____________________________________________________________
+     The due by datetime is in the incorrect format.
+     Deadline Format: deadline <description> /by yyyy-MM-dd HH:mm:ss
+    ____________________________________________________________
+    ____________________________________________________________
+     The start / end datetime is in the incorrect format.
+     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
+    ____________________________________________________________
+    ____________________________________________________________
+     The start datetime is after the end datetime.
+     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
+    ____________________________________________________________
+    ____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] recovered
+     Now you have 1 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] recovered
     ____________________________________________________________
     ____________________________________________________________
     Bye. See you again soon!

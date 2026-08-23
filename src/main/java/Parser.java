@@ -1,6 +1,15 @@
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 public class Parser {
-    private static final String DEADLINE_FORMAT = "\nDeadline Format: deadline <description> /by <due by>";
-    private static final String EVENT_FORMAT = "\nEvent Format: event <description> /from <start> /to <end>";
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String DATE_TIME_FORMAT = DATE_FORMAT + " HH:mm:ss";
+    private static final String DEADLINE_FORMAT = "\nDeadline Format: deadline <description> /by " + DATE_TIME_FORMAT;
+    private static final String EVENT_FORMAT = String.format("\nEvent Format: event <description> /from %s /to %s",
+            DATE_TIME_FORMAT, DATE_TIME_FORMAT);
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 
     /**
      * Validates that no arguments were supplied for a command that expects none.
@@ -12,6 +21,15 @@ public class Parser {
     public void requireNoArguments(String args, String command) throws ZenException {
         if (!args.isEmpty()) {
             throw new ZenException("The " + command + " command does not take arguments.");
+        }
+    }
+
+    public LocalDate parseDate(String arguments) throws ZenException {
+        try {
+            return LocalDate.parse(arguments);
+        } catch (DateTimeParseException e) {
+            throw new ZenException("The date is in the incorrect format.\n Correct format: "
+                    + DATE_FORMAT);
         }
     }
 
@@ -65,7 +83,13 @@ public class Parser {
                     + DEADLINE_FORMAT);
         }
 
-        return new Deadline(description, dueBy);
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(dueBy, DATE_TIME_FORMATTER);
+            return new Deadline(description, dateTime);
+        } catch (DateTimeParseException e) {
+            throw new ZenException("The due by datetime is in the incorrect format."
+                    + DEADLINE_FORMAT);
+        }
     }
 
     /**
@@ -115,6 +139,18 @@ public class Parser {
             throw new ZenException("The end time of an Event cannot be empty. Please try again!" + EVENT_FORMAT);
         }
 
-        return new Event(description, start, end);
+        try {
+            LocalDateTime startDateTime = LocalDateTime.parse(start, DATE_TIME_FORMATTER);
+            LocalDateTime endDateTime = LocalDateTime.parse(end, DATE_TIME_FORMATTER);
+
+            if (startDateTime.isAfter(endDateTime)) {
+                throw new ZenException("The start datetime is after the end datetime." + EVENT_FORMAT);
+            } else {
+                return new Event(description, startDateTime, endDateTime);
+            }
+        } catch (DateTimeParseException e) {
+            throw new ZenException("The start / end datetime is in the incorrect format."
+                    + EVENT_FORMAT);
+        }
     }
 }

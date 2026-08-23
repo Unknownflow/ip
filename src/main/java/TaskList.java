@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +60,26 @@ public class TaskList {
 
     public boolean isEmpty() {
         return this.tasks.isEmpty();
+    }
+
+
+    /**
+     * Returns a new task list containing only the tasks that occur on the
+     * given date, preserving their original order.
+     *
+     * @param date the date to filter tasks by
+     * @return a task list containing only tasks that occur on the specified date
+     */
+    public TaskList getAllTasksOnDate(LocalDate date) {
+        TaskList newTaskList = new TaskList();
+
+        for (Task task : tasks) {
+            if (task.occursOn(date)) {
+                newTaskList.addTask(task);
+            }
+        }
+
+        return newTaskList;
     }
 
     /**
