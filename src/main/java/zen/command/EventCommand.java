@@ -1,3 +1,10 @@
+package zen.command;
+
+import zen.ZenException;
+import zen.storage.Storage;
+import zen.task.TaskList;
+import zen.ui.Ui;
+
 /** Adds an event task. */
 public class EventCommand extends AddCommand {
     private final String arguments;

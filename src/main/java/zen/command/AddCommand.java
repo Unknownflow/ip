@@ -1,3 +1,11 @@
+package zen.command;
+
+import zen.ZenException;
+import zen.storage.Storage;
+import zen.task.Task;
+import zen.task.TaskList;
+import zen.ui.Ui;
+
 /** Base command for adding a newly created task to the task list. */
 public abstract class AddCommand extends Command {
     /** Adds, saves, and displays the supplied task. */

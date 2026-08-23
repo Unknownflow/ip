@@ -1,3 +1,10 @@
+package zen.command;
+
+import zen.ZenException;
+import zen.storage.Storage;
+import zen.task.TaskList;
+import zen.ui.Ui;
+
 /**
  * Represents one user command that can operate on the application's state.
  */

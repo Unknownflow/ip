@@ -2,11 +2,11 @@
 
 ## Execution
 
-- **Application:** `Zen`
+- **Application:** `zen.Zen`
 - **Java version:** `25`
 - **Source directory:** `src/main/java`
 - **Compile behavior:** The `test-ui` skill compiles all Java sources with `javac --release 25` into `out/ui-test` before running cases.
-- **Isolation:** Each automated test case starts a fresh `Zen` process with an empty, pre-existing `data/task_list.txt` file, unless its case provides storage data.
+- **Isolation:** Each automated test case starts a fresh `zen.Zen` process with an empty, pre-existing `data/task_list.txt` file, unless its case provides storage data.
 - **First-run storage check:** Before release, manually run the application from a working directory that contains neither `data/` nor `data/task_list.txt`. Enter `todo first task`, then `bye`. Verify that the application continues normally and creates `data/task_list.txt` containing `T | 0 | first task`. This manual check is required because the automated runner deliberately pre-creates the storage file for every case.
 - **Comparison:** Expected output is exact after normalizing line endings and ignoring only the final line-ending produced by the process.
 - **Failure policy:** Stop immediately at the first failed case and report both expected and actual output.
