@@ -90,12 +90,8 @@ public class Ui {
     }
 
     public void printExitMessage() {
-        String exitMessage = """
-                %s
-                    Bye. See you again soon!
-                %s
-                """.formatted(INDENTED_DIVIDER, INDENTED_DIVIDER);
-        System.out.println(exitMessage);
+        echo("Bye. See you again soon!");
+        scanner.close();
     }
 
     public void printErrorMessage(String errorMessage) {
