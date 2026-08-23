@@ -2,7 +2,7 @@
 param(
     [string] $PlanPath = "test\ui-test-plan.md",
     [string] $SourcePath = "src\main\java",
-    [string] $MainClass = "Zen",
+    [string] $MainClass = "zen.Zen",
     [string] $OutputDirectory = "out\ui-test",
     [ValidateRange(1, 600)]
     [int] $TimeoutSeconds = 30
@@ -127,7 +127,7 @@ if ($javaMajor -ne 25 -or $javacMajor -ne 25) {
 }
 
 $cases = Read-TestCases (Resolve-Path -LiteralPath $PlanPath)
-$sourceFiles = @(Get-ChildItem -LiteralPath $SourcePath -Filter "*.java" -File | Sort-Object FullName)
+$sourceFiles = @(Get-ChildItem -LiteralPath $SourcePath -Filter "*.java" -File -Recurse | Sort-Object FullName)
 if ($sourceFiles.Count -eq 0) {
     throw "No Java source files found in $SourcePath."
 }

@@ -1,3 +1,11 @@
+package zen;
+
+import zen.command.Command;
+import zen.command.Parser;
+import zen.storage.Storage;
+import zen.task.TaskList;
+import zen.ui.Ui;
+
 public class Zen {
 
     private Storage storage;

@@ -52,7 +52,7 @@ expected-output block.
    ```
 
    The runner compiles all `src/main/java/*.java` files into `out/ui-test`,
-   starts a fresh `Zen` process for each case, checks its output, and prints a
+   starts a fresh `zen.Zen` process for each case, checks its output, and prints a
    transcript containing the console input and output.
 4. Show the complete transcript in the response. If a case fails, stop
    immediately. Report its actual and expected output and do not run later

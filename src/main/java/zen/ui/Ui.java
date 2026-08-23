@@ -1,3 +1,8 @@
+package zen.ui;
+
+import zen.task.Task;
+import zen.task.TaskList;
+
 import java.util.Scanner;
 
 public class Ui {

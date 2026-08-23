@@ -1,3 +1,11 @@
+package zen.command;
+
+import zen.ZenException;
+import zen.storage.Storage;
+import zen.task.Task;
+import zen.task.TaskList;
+import zen.ui.Ui;
+
 /** Marks a task as done. */
 public class MarkCommand extends Command {
     private final String arguments;
