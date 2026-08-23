@@ -41,6 +41,10 @@ After every code update:
 
 3. Show the complete console input/output transcript. If a test fails, stop immediately and report the actual and expected outputs; do not continue to later tests or declare the code change complete.
 
+## JUnit test coverage
+
+Maintain JUnit coverage for roughly the highest-value 50% of methods, prioritizing complex, core, and critical business logic. Update the affected JUnit tests after every code change so this target continues to be met.
+
 ## Git
 
 Use lightweight tags unless the user requests an annotated tag.
