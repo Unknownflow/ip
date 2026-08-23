@@ -1,11 +1,12 @@
-public enum Command {
-    LIST, MARK, UNMARK, OCCUR, DELETE, TODO, DEADLINE, EVENT, BYE, UNKNOWN;
+/**
+ * Represents one user command that can operate on the application's state.
+ */
+public abstract class Command {
+    /** Executes this command using the application's collaborators. */
+    public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws ZenException;
 
-    public static Command fromString(String input) {
-        try {
-            return Command.valueOf(input.trim().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return UNKNOWN;
-        }
+    /** Returns whether executing this command ends the application loop. */
+    public boolean isExit() {
+        return false;
     }
 }

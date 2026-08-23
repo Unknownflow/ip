@@ -12,19 +12,48 @@ public class Parser {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 
     /**
+     * Converts one line of user input into the command that will handle it.
+     *
+     * @param fullCommand raw input entered by the user
+     * @return the matching command, or an {@link UnknownCommand} for an unsupported keyword
+     */
+    public static Command parse(String fullCommand) {
+        if (fullCommand.isEmpty()) {
+            return new UnknownCommand();
+        }
+
+        String[] parts = fullCommand.trim().split("\\s+", 2);
+        String command = parts[0].toLowerCase();
+        String arguments = parts.length == 2 ? parts[1] : "";
+
+        return switch (command) {
+            case "list" -> new ListCommand(arguments);
+            case "mark" -> new MarkCommand(arguments);
+            case "unmark" -> new UnmarkCommand(arguments);
+            case "occur" -> new OccurCommand(arguments);
+            case "delete" -> new DeleteCommand(arguments);
+            case "todo" -> new TodoCommand(arguments);
+            case "deadline" -> new DeadlineCommand(arguments);
+            case "event" -> new EventCommand(arguments);
+            case "bye" -> new ExitCommand();
+            default -> new UnknownCommand();
+        };
+    }
+
+    /**
      * Validates that no arguments were supplied for a command that expects none.
      *
      * @param args    the argument string following the command keyword.
      * @param command the name of the command, used in the error message if validation fails.
      * @throws ZenException if {@code args} is non-empty.
      */
-    public void requireNoArguments(String args, String command) throws ZenException {
+    public static void requireNoArguments(String args, String command) throws ZenException {
         if (!args.isEmpty()) {
             throw new ZenException("The " + command + " command does not take arguments.");
         }
     }
 
-    public LocalDate parseDate(String arguments) throws ZenException {
+    public static LocalDate parseDate(String arguments) throws ZenException {
         try {
             return LocalDate.parse(arguments);
         } catch (DateTimeParseException e) {
@@ -40,7 +69,7 @@ public class Parser {
      * @return the parsed index as an integer.
      * @throws ZenException if {@code arguments} is not a positive integer.
      */
-    public int parseTaskNumber(String arguments) throws ZenException {
+    public static int parseTaskNumber(String arguments) throws ZenException {
         if (!arguments.matches("\\d+")) {
             throw new ZenException("Only positive integers are allowed for task number.");
         }
@@ -57,7 +86,7 @@ public class Parser {
      * @throws ZenException if {@code /by} is missing, appears more than once,
      *                       or if the description or due-by value is empty.
      */
-    public Deadline parseDeadline(String userInput) throws ZenException {
+    public static Deadline parseDeadline(String userInput) throws ZenException {
         int byIdx = userInput.indexOf("/by");
 
         if (byIdx == -1) {
@@ -103,7 +132,7 @@ public class Parser {
      *                       once, {@code /from} does not precede {@code /to}, or if the
      *                       description, start, or end value is empty.
      */
-    public Event parseEvent(String userInput) throws ZenException {
+    public static Event parseEvent(String userInput) throws ZenException {
         int fromIdx = userInput.indexOf("/from");
         int toIdx = userInput.indexOf("/to");
 
