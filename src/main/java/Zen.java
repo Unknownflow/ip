@@ -2,23 +2,28 @@ import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Zen {
-    private static final String FILE_PATH = "data/task_list.txt";
 
-    public static void main(String[] args) throws ZenException {
-        Parser parser = new Parser();
-        Ui ui = new Ui();
-        Storage storage = new Storage(FILE_PATH);
-        TaskList taskList = null;
+    private Storage storage;
+    private TaskList taskList;
+    private Parser parser;
+    private Ui ui;
 
-        Scanner scanner = new Scanner(System.in);
-        ui.printGreeting();
+    public Zen(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
+        parser = new Parser();
 
         try {
             taskList = storage.load();
         } catch (ZenException e) {
             ui.printErrorMessage(e.getMessage());
-            System.exit(0);
+            taskList = new TaskList();
         }
+    }
+
+    public void run() {
+        Scanner scanner = new Scanner(System.in);
+        ui.printGreeting();
 
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine().trim();
@@ -107,5 +112,9 @@ public class Zen {
         }
 
         scanner.close();
+    }
+
+    public static void main(String[] args) throws ZenException {
+        new Zen("data/task_list.txt").run();
     }
 }
