@@ -1,9 +1,11 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class Parser {
-    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String DATE_TIME_FORMAT = DATE_FORMAT + " HH:mm:ss";
     private static final String DEADLINE_FORMAT = "\nDeadline Format: deadline <description> /by " + DATE_TIME_FORMAT;
     private static final String EVENT_FORMAT = String.format("\nEvent Format: event <description> /from %s /to %s",
             DATE_TIME_FORMAT, DATE_TIME_FORMAT);
@@ -19,6 +21,15 @@ public class Parser {
     public void requireNoArguments(String args, String command) throws ZenException {
         if (!args.isEmpty()) {
             throw new ZenException("The " + command + " command does not take arguments.");
+        }
+    }
+
+    public LocalDate parseDate(String arguments) throws ZenException {
+        try {
+            return LocalDate.parse(arguments);
+        } catch (DateTimeParseException e) {
+            throw new ZenException("The date is in the incorrect format.\n Correct format: "
+                    + DATE_FORMAT);
         }
     }
 

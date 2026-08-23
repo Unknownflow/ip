@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public abstract class Task {
     protected String description;
     protected boolean isDone;
@@ -20,6 +22,8 @@ public abstract class Task {
     }
 
     public abstract String toStorageString();
+
+    public abstract boolean occursOn(LocalDate date);
 
     @Override
     public String toString() {
