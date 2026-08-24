@@ -16,6 +16,11 @@ public class Storage {
     private final Path filePath;
     private final Path storageDirectory;
 
+    /**
+     * Creates a storage service for the given task-list file.
+     *
+     * @param filePath path of the file used to store tasks
+     */
     public Storage(String filePath) {
         this.filePath = Path.of(filePath);
         this.storageDirectory = this.filePath.getParent();
