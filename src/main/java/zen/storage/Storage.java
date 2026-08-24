@@ -1,13 +1,17 @@
 package zen.storage;
 
-import zen.ZenException;
-import zen.task.*;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import zen.ZenException;
+import zen.task.Deadline;
+import zen.task.Event;
+import zen.task.Task;
+import zen.task.TaskList;
+import zen.task.Todo;
 
 /**
  * Saves and loads the task list at the specified file path.
@@ -16,6 +20,11 @@ public class Storage {
     private final Path filePath;
     private final Path storageDirectory;
 
+    /**
+     * Creates storage backed by a supplied file path.
+     *
+     * @param filePath the location of the task storage file.
+     */
     public Storage(String filePath) {
         this.filePath = Path.of(filePath);
         this.storageDirectory = this.filePath.getParent();

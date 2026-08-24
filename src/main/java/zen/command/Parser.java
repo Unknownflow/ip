@@ -1,14 +1,15 @@
 package zen.command;
 
-import zen.ZenException;
-import zen.task.Deadline;
-import zen.task.Event;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+import zen.ZenException;
+import zen.task.Deadline;
+import zen.task.Event;
+
+/** Converts user input into commands and validated task data. */
 public class Parser {
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String DATE_TIME_FORMAT = DATE_FORMAT + " HH:mm:ss";
@@ -59,6 +60,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses an ISO-8601 date from command arguments.
+     *
+     * @param arguments the text expected to contain a date.
+     * @return the parsed date.
+     * @throws ZenException if the text is not a valid ISO-8601 date.
+     */
     public static LocalDate parseDate(String arguments) throws ZenException {
         try {
             return LocalDate.parse(arguments);

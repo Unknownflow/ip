@@ -6,12 +6,18 @@ import zen.storage.Storage;
 import zen.task.TaskList;
 import zen.ui.Ui;
 
+/** Runs the Zen command-line task manager. */
 public class Zen {
 
     private Storage storage;
     private TaskList taskList;
     private Ui ui;
 
+    /**
+     * Creates the application and loads its saved tasks.
+     *
+     * @param filePath the storage location for tasks.
+     */
     public Zen(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -24,6 +30,7 @@ public class Zen {
         }
     }
 
+    /** Runs the command-processing loop until the user exits. */
     public void run() {
         ui.printGreeting();
         boolean isExit = false;
@@ -43,6 +50,12 @@ public class Zen {
         }
     }
 
+    /**
+     * Starts the application using its default task storage file.
+     *
+     * @param args command-line arguments, which are not used.
+     * @throws ZenException if the application cannot initialize its task storage.
+     */
     public static void main(String[] args) throws ZenException {
         new Zen("data/task_list.txt").run();
     }

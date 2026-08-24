@@ -4,10 +4,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/** Represents a task that is due at a specified date and time. */
 public class Deadline extends Task {
-    protected LocalDateTime dueBy;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm:ss");
+    protected LocalDateTime dueBy;
 
+    /**
+     * Creates an incomplete deadline task.
+     *
+     * @param description the deadline description.
+     * @param dueBy the due date and time.
+     */
     public Deadline(String description, LocalDateTime dueBy) {
         super(description);
         this.dueBy = dueBy;

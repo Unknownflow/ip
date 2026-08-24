@@ -4,11 +4,19 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/** Represents a task that occurs between specified start and end date-times. */
 public class Event extends Task {
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm:ss");
     protected LocalDateTime start;
     protected LocalDateTime end;
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm:ss");
 
+    /**
+     * Creates an incomplete event task.
+     *
+     * @param description the event description.
+     * @param start the event start date and time.
+     * @param end the event end date and time.
+     */
     public Event(String description, LocalDateTime start, LocalDateTime end) {
         super(description);
         this.start = start;
@@ -43,7 +51,7 @@ public class Event extends Task {
 
     @Override
     public String toString() {
-        return String.format("[E]%s (from: %s to: %s)", super.toString(), this.start.format(FORMATTER),
-                this.end.format(FORMATTER));
+        return String.format("[E]%s (from: %s to: %s)", super.toString(),
+                this.start.format(FORMATTER), this.end.format(FORMATTER));
     }
 }
