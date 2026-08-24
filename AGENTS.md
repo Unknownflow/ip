@@ -54,6 +54,10 @@ Maintain JUnit coverage for roughly the highest-value 50% of methods, prioritizi
 
 ## Git
 
+Before proposing or creating any commit in this project, you MUST follow the
+project-specific `seedu-git-standard` skill at
+`.codex/skills/seedu-git-standard/SKILL.md`.
+
 Use lightweight tags unless the user requests an annotated tag.
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.
 Do not commit or push unless explicitly asked.
