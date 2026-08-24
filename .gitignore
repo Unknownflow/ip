@@ -25,3 +25,6 @@ text-ui-test/EXPECTED-UNIX.TXT
 # Runtime task-list storage
 task_list.txt
 /data/
+
+# Codex files
+.codex/
