@@ -4,17 +4,24 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/** Represents a task that must be completed by a particular date and time. */
 public class Deadline extends Task {
     protected LocalDateTime dueBy;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm:ss");
 
+    /**
+     * Creates a deadline with the given description and due date and time.
+     *
+     * @param description task description
+     * @param dueBy date and time by which the task is due
+     */
     public Deadline(String description, LocalDateTime dueBy) {
         super(description);
         this.dueBy = dueBy;
     }
 
     /**
-     * Returns this deadline in the file format used for persistence.
+     * Returns this deadline in the file format used for storage.
      *
      * @return a pipe-delimited deadline record
      */
@@ -35,6 +42,11 @@ public class Deadline extends Task {
         return dueBy.toLocalDate().equals(date);
     }
 
+    /**
+     * Returns a human-readable representation of this deadline.
+     *
+     * @return deadline text including its due date and time
+     */
     @Override
     public String toString() {
         return String.format("[D]%s (by: %s)", super.toString(), this.dueBy.format(FORMATTER));
