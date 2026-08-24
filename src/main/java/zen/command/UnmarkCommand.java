@@ -10,10 +10,16 @@ import zen.ui.Ui;
 public class UnmarkCommand extends Command {
     private final String arguments;
 
+    /**
+     * Creates a command using the supplied task number argument.
+     *
+     * @param arguments task number to mark as not done
+     */
     public UnmarkCommand(String arguments) {
         this.arguments = arguments;
     }
 
+    /** Marks the requested task as not done, saves the list, and displays the result. */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws ZenException {
         Task task = tasks.unmarkTask(Parser.parseTaskNumber(arguments));

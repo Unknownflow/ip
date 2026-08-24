@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/** Converts user input into commands and validates command arguments. */
 public class Parser {
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String DATE_TIME_FORMAT = DATE_FORMAT + " HH:mm:ss";
@@ -59,6 +60,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses an ISO-8601 date from a command argument.
+     *
+     * @param arguments text expected in {@code yyyy-MM-dd} format
+     * @return the parsed date
+     * @throws ZenException if the text is not a valid date in the required format
+     */
     public static LocalDate parseDate(String arguments) throws ZenException {
         try {
             return LocalDate.parse(arguments);
