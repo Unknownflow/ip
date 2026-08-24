@@ -87,6 +87,20 @@ public class Ui {
     }
 
     /**
+     * Displays the matching tasks, or a message when no tasks match.
+     *
+     * @param taskList the tasks that match a find command
+     */
+    public void printMatchingTasks(TaskList taskList) {
+        if (taskList.isEmpty()) {
+            printIndented("No matching tasks in your list.");
+        } else {
+            printIndented("Here are the matching tasks in your list:");
+            printIndented(taskList.toString());
+        }
+    }
+
+    /**
      * Prints confirmation that a task was completed.
      *
      * @param task the completed task.

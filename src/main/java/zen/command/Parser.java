@@ -38,6 +38,7 @@ public class Parser {
             case "mark" -> new MarkCommand(arguments);
             case "unmark" -> new UnmarkCommand(arguments);
             case "occur" -> new OccurCommand(arguments);
+            case "find" -> new FindCommand(arguments);
             case "delete" -> new DeleteCommand(arguments);
             case "todo" -> new TodoCommand(arguments);
             case "deadline" -> new DeadlineCommand(arguments);

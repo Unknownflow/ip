@@ -1448,6 +1448,60 @@ bye
     ____________________________________________________________
 ```
 
+### UI-034 — Find: matching task descriptions
+
+**Aim:** Verify that `find` displays matching task descriptions in their original order, excludes a differently cased description, and reports when no task matches.
+
+**Inputs:**
+```text
+todo read book
+deadline return book /by 2026-06-06 18:00:00
+todo Book club
+find book
+find notes
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+     ______              
+    |__  /___  _ __      
+      / // _ \| '_ \   
+     / /|  __/| | | |    
+    /____\___||_| |_|
+    Hello! I'm Zen.
+    What can I do for you?
+    ____________________________________________________________
+
+    ____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] read book
+     Now you have 1 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Got it. I've added this task:
+       [D][ ] return book (by: Jun 06 2026 18:00:00)
+     Now you have 2 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] Book club
+     Now you have 3 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Here are the matching tasks in your list:
+     1.[T][ ] read book
+     2.[D][ ] return book (by: Jun 06 2026 18:00:00)
+    ____________________________________________________________
+    ____________________________________________________________
+     No matching tasks in your list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Bye. See you again soon!
+    ____________________________________________________________
+```
+
 ### UI-029 — Negative: task operations on an empty list are rejected
 
 **Aim:** Verify that mark, unmark, and delete report a clear error without changing an empty task list.

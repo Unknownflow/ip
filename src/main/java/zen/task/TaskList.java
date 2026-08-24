@@ -101,6 +101,26 @@ public class TaskList {
     public boolean isEmpty() {
         return this.tasks.isEmpty();
     }
+
+    /**
+     * Returns a new task list containing only the tasks that have the keyword
+     * present in the description, preserving their original order.
+     *
+     * @param keyword the case-sensitive description keyword to filter tasks by
+     * @return a task list containing only tasks whose descriptions contain the keyword
+     */
+    public TaskList getAllTasksBasedOnDescription(String keyword) {
+        TaskList matchingTasks = new TaskList();
+
+        for (Task task : tasks) {
+            if (task.descriptionContains(keyword)) {
+                matchingTasks.addTask(task);
+            }
+        }
+
+        return matchingTasks;
+    }
+
     /**
      * Returns a new task list containing only the tasks that occur on the
      * given date, preserving their original order.

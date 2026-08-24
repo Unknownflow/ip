@@ -54,9 +54,8 @@ public class Zen {
      * Starts the application using its default task storage file.
      *
      * @param args command-line arguments, which are not used.
-     * @throws ZenException if the application cannot initialize its task storage.
      */
-    public static void main(String[] args) throws ZenException {
+    public static void main(String[] args) {
         new Zen("data/task_list.txt").run();
     }
 }

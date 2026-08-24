@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import zen.ZenException;
 import zen.task.Deadline;
 import zen.task.Event;
+
 /**
  * Tests parsing and validation of user command input.
  */
@@ -26,6 +27,7 @@ public class ParserTest {
         assertInstanceOf(MarkCommand.class, Parser.parse("mark 1"));
         assertInstanceOf(UnmarkCommand.class, Parser.parse("unmark 1"));
         assertInstanceOf(OccurCommand.class, Parser.parse("occur 2026-10-10"));
+        assertInstanceOf(FindCommand.class, Parser.parse("find book"));
         assertInstanceOf(DeleteCommand.class, Parser.parse("delete 1"));
         assertInstanceOf(TodoCommand.class, Parser.parse("todo buy milk"));
         assertInstanceOf(DeadlineCommand.class, Parser.parse("deadline submit /by 2026-10-10 10:30:00"));
