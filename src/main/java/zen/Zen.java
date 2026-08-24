@@ -43,7 +43,7 @@ public class Zen {
         }
     }
 
-    public static void main(String[] args) throws ZenException {
+    public static void main(String[] args) {
         new Zen("data/task_list.txt").run();
     }
 }

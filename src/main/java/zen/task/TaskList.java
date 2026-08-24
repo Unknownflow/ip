@@ -1,10 +1,10 @@
 package zen.task;
 
-import zen.ZenException;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import zen.ZenException;
 
 public class TaskList {
     private List<Task> tasks;
@@ -66,6 +66,24 @@ public class TaskList {
         return this.tasks.isEmpty();
     }
 
+    /**
+     * Returns a new task list containing only the tasks that have the keyword
+     * present in the description, preserving their original order.
+     *
+     * @param keyword the case-sensitive description keyword to filter tasks by
+     * @return a task list containing only tasks whose descriptions contain the keyword
+     */
+    public TaskList getAllTasksBasedOnDescription(String keyword) {
+        TaskList matchingTasks = new TaskList();
+
+        for (Task task : tasks) {
+            if (task.descriptionContains(keyword)) {
+                matchingTasks.addTask(task);
+            }
+        }
+
+        return matchingTasks;
+    }
 
     /**
      * Returns a new task list containing only the tasks that occur on the

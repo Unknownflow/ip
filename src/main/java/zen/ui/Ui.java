@@ -1,9 +1,9 @@
 package zen.ui;
 
+import java.util.Scanner;
+
 import zen.task.Task;
 import zen.task.TaskList;
-
-import java.util.Scanner;
 
 public class Ui {
     private static final String DIVIDER = "____________________________________________________________";
@@ -57,6 +57,20 @@ public class Ui {
             printIndented("Your task list is currently empty.");
         } else {
             printIndented("Here are the tasks in your list:");
+            printIndented(taskList.toString());
+        }
+    }
+
+    /**
+     * Displays the matching tasks, or a message when no tasks match.
+     *
+     * @param taskList the tasks that match a find command
+     */
+    public void printMatchingTasks(TaskList taskList) {
+        if (taskList.isEmpty()) {
+            printIndented("No matching tasks in your list.");
+        } else {
+            printIndented("Here are the matching tasks in your list:");
             printIndented(taskList.toString());
         }
     }

@@ -23,6 +23,16 @@ public abstract class Task {
         this.isDone = false;
     }
 
+    /**
+     * Returns whether this task's description contains the specified keyword.
+     *
+     * @param keyword the case-sensitive keyword to search for
+     * @return true if the description contains the keyword, false otherwise
+     */
+    public boolean descriptionContains(String keyword) {
+        return description.contains(keyword);
+    }
+
     public abstract String toStorageString();
 
     public abstract boolean occursOn(LocalDate date);
