@@ -2,12 +2,12 @@ package zen.task;
 
 import java.time.LocalDate;
 
-/** Represents a task without a date or time constraint. */
+/** Represents a task without a date or time. */
 public class Todo extends Task {
     /**
-     * Creates a todo with the given description.
+     * Creates an incomplete todo task.
      *
-     * @param description task description
+     * @param description the todo description.
      */
     public Todo(String description) {
         super(description);
@@ -19,7 +19,7 @@ public class Todo extends Task {
     }
 
     /**
-     * Returns this todo in the file format used for storage.
+     * Returns this todo in the file format used for persistence.
      *
      * @return a pipe-delimited todo record
      */

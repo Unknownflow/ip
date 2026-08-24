@@ -1,22 +1,23 @@
 package zen.command;
 
-import org.junit.jupiter.api.Test;
-import zen.ZenException;
-import zen.task.Deadline;
-import zen.task.Event;
-
-import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.LocalDate;
+
+import org.junit.jupiter.api.Test;
+
+import zen.ZenException;
+import zen.task.Deadline;
+import zen.task.Event;
 /**
  * Tests parsing and validation of user command input.
  */
 public class ParserTest {
     private static final String DEADLINE_FORMAT = "\nDeadline Format: deadline <description> /by yyyy-MM-dd HH:mm:ss";
-    private static final String EVENT_FORMAT = "\nEvent Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss";
+    private static final String EVENT_FORMAT = "\nEvent Format: event <description> /from "
+            + "yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss";
 
     // AI-assisted
     @Test
@@ -28,7 +29,8 @@ public class ParserTest {
         assertInstanceOf(DeleteCommand.class, Parser.parse("delete 1"));
         assertInstanceOf(TodoCommand.class, Parser.parse("todo buy milk"));
         assertInstanceOf(DeadlineCommand.class, Parser.parse("deadline submit /by 2026-10-10 10:30:00"));
-        assertInstanceOf(EventCommand.class, Parser.parse("event party /from 2026-10-10 10:30:00 /to 2026-10-10 11:30:00"));
+        assertInstanceOf(EventCommand.class,
+                Parser.parse("event party /from 2026-10-10 10:30:00 /to 2026-10-10 11:30:00"));
         assertInstanceOf(ExitCommand.class, Parser.parse("bye"));
     }
 
@@ -173,9 +175,11 @@ public class ParserTest {
     @Test
     public void parseEvent_duplicateMarkers_throwsHelpfulException() {
         ZenException duplicateFrom = assertThrows(ZenException.class,
-                () -> Parser.parseEvent("meeting /from 2026-10-10 10:30:00 /from 2026-10-10 11:00:00 /to 2026-10-10 11:30:00"));
+                () -> Parser.parseEvent("meeting /from 2026-10-10 10:30:00 /from 2026-10-10 11:00:00 "
+                        + "/to 2026-10-10 11:30:00"));
         ZenException duplicateTo = assertThrows(ZenException.class,
-                () -> Parser.parseEvent("meeting /from 2026-10-10 10:30:00 /to 2026-10-10 11:00:00 /to 2026-10-10 11:30:00"));
+                () -> Parser.parseEvent("meeting /from 2026-10-10 10:30:00 /to 2026-10-10 11:00:00 "
+                        + "/to 2026-10-10 11:30:00"));
 
         assertEquals("Please include only 1 /from in your event." + EVENT_FORMAT, duplicateFrom.getMessage());
         assertEquals("Please include only 1 /to in your event." + EVENT_FORMAT, duplicateTo.getMessage());

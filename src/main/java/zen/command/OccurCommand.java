@@ -1,11 +1,11 @@
 package zen.command;
 
+import java.time.LocalDate;
+
 import zen.ZenException;
 import zen.storage.Storage;
 import zen.task.TaskList;
 import zen.ui.Ui;
-
-import java.time.LocalDate;
 
 /** Displays dated tasks that occur on the requested date. */
 public class OccurCommand extends Command {

@@ -1,14 +1,14 @@
 package zen.task;
 
-import zen.ZenException;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Manages the list of tasks in the application. */
+import zen.ZenException;
+
+/** Stores and manages the application's ordered tasks. */
 public class TaskList {
-    private List<Task> tasks;
+    private final List<Task> tasks;
 
     /** Creates an empty task list. */
     public TaskList() {
@@ -16,20 +16,20 @@ public class TaskList {
     }
 
     /**
-     * Appends a task to this list.
+     * Adds a task to the end of this list.
      *
-     * @param task task to add
+     * @param task the task to add.
      */
     public void addTask(Task task) {
         this.tasks.add(task);
     }
 
     /**
-     * Removes and returns the task at a one-based task number.
+     * Deletes a task identified by its one-based task number.
      *
-     * @param taskNum one-based number of the task to remove
-     * @return the removed task
-     * @throws ZenException if the list is empty or the number is invalid
+     * @param taskNum the one-based task number.
+     * @return the deleted task.
+     * @throws ZenException if no task has the supplied number.
      */
     public Task deleteTask(int taskNum) throws ZenException {
         if (!isValidTaskNumber(taskNum)) {
@@ -53,11 +53,11 @@ public class TaskList {
     }
 
     /**
-     * Marks the task at a one-based task number as complete.
+     * Marks a task identified by its one-based task number as complete.
      *
-     * @param taskNum one-based number of the task to mark
-     * @return the marked task
-     * @throws ZenException if the list is empty or the number is invalid
+     * @param taskNum the one-based task number.
+     * @return the completed task.
+     * @throws ZenException if no task has the supplied number.
      */
     public Task markTask(int taskNum) throws ZenException {
         if (!isValidTaskNumber(taskNum)) {
@@ -73,11 +73,11 @@ public class TaskList {
     }
 
     /**
-     * Marks the task at a one-based task number as incomplete.
+     * Marks a task identified by its one-based task number as incomplete.
      *
-     * @param taskNum one-based number of the task to unmark
-     * @return the unmarked task
-     * @throws ZenException if the list is empty or the number is invalid
+     * @param taskNum the one-based task number.
+     * @return the incomplete task.
+     * @throws ZenException if no task has the supplied number.
      */
     public Task unmarkTask(int taskNum) throws ZenException {
         if (!isValidTaskNumber(taskNum)) {
@@ -92,26 +92,15 @@ public class TaskList {
         return task;
     }
 
-    /**
-     * Returns the number of tasks in this list.
-     *
-     * @return task count
-     */
+    /** Returns the number of tasks in this list. */
     public int size() {
         return this.tasks.size();
     }
 
-
-    /**
-     * Returns whether this list contains no tasks.
-     *
-     * @return true if the list is empty
-     */
+    /** Returns whether this list has no tasks. */
     public boolean isEmpty() {
         return this.tasks.isEmpty();
     }
-
-
     /**
      * Returns a new task list containing only the tasks that occur on the
      * given date, preserving their original order.
@@ -132,7 +121,7 @@ public class TaskList {
     }
 
     /**
-     * Returns all tasks as newline-separated records for storage.
+     * Returns all tasks as newline-separated records for persistent storage.
      *
      * @return pipe-delimited task records, one per line
      */
@@ -149,11 +138,6 @@ public class TaskList {
         return output.toString();
     }
 
-    /**
-     * Returns all tasks as a numbered, newline-separated list.
-     *
-     * @return formatted task list
-     */
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
@@ -161,8 +145,7 @@ public class TaskList {
         for (int i = 0; i < this.tasks.size(); i++) {
             output.append(String.format("%d.%s", i + 1, tasks.get(i)));
 
-            // add a new line to the end of the string except for the last item
-            // in the task list
+            // Add a new line after each item except the last.
             if (i < this.tasks.size() - 1) {
                 output.append("\n");
             }

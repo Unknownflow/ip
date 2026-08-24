@@ -1,11 +1,11 @@
 package zen.ui;
 
+import java.util.Scanner;
+
 import zen.task.Task;
 import zen.task.TaskList;
 
-import java.util.Scanner;
-
-/** Handles all console input and output for the chatbot. */
+/** Handles console input and output for the Zen application. */
 public class Ui {
     private static final String DIVIDER = "____________________________________________________________";
     private static final String NAME = "Zen";
@@ -20,16 +20,12 @@ public class Ui {
             """;
     private final Scanner scanner;
 
-    /** Creates a UI that reads commands from standard input. */
+    /** Creates a user interface that reads commands from standard input. */
     public Ui() {
         this.scanner = new Scanner(System.in);
     }
 
-    /**
-     * Reads a line from standard input and trims it.
-     *
-     * @return the entered command without leading or trailing whitespace
-     */
+    /** Returns the next trimmed command read from standard input. */
     public String readCommand() {
         return scanner.nextLine().trim();
     }
@@ -40,24 +36,24 @@ public class Ui {
      * @param lines lines to print; embedded line breaks are also indented
      */
     private static void printIndented(String... lines) {
-        for (String line: lines) {
-            // ensure all lines with a linebreak start on a new line with indentation
-            for (String individualLine: line.split("\\R")) {
+        for (String line : lines) {
+            // Ensure each line after a line break begins with indentation.
+            for (String individualLine : line.split("\\R")) {
                 System.out.println(INDENTATION + individualLine);
             }
         }
     }
 
-    /** Prints the divider used between console responses. */
+    /** Prints a divider between console messages. */
     public void printDivider() {
         System.out.println(INDENTED_DIVIDER);
     }
 
     /**
-     * Displays confirmation message that a task was added.
+     * Prints confirmation that a task was added.
      *
-     * @param task added task
-     * @param size total number of tasks in task list
+     * @param task the task that was added.
+     * @param size the resulting number of tasks.
      */
     public void printAddTask(Task task, int size) {
         printIndented(
@@ -68,18 +64,18 @@ public class Ui {
     }
 
     /**
-     * Prints a message using the standard indentation.
+     * Prints a message with the standard console indentation.
      *
-     * @param echoString message to print
+     * @param echoString the message to print.
      */
     public void echo(String echoString) {
         printIndented(echoString);
     }
 
     /**
-     * Displays the supplied task list or an empty-list message.
+     * Prints a task list, or a message when it is empty.
      *
-     * @param taskList task list to display
+     * @param taskList the task list to print.
      */
     public void printTaskList(TaskList taskList) {
         if (taskList.isEmpty()) {
@@ -91,9 +87,9 @@ public class Ui {
     }
 
     /**
-     * Displays confirmation message that a task was marked as done.
+     * Prints confirmation that a task was completed.
      *
-     * @param task completed task
+     * @param task the completed task.
      */
     public void printMarkTaskDone(Task task) {
         printIndented(
@@ -103,9 +99,9 @@ public class Ui {
     }
 
     /**
-     * Displays confirmation message that a task was marked as not done.
+     * Prints confirmation that a task was marked incomplete.
      *
-     * @param task incomplete task
+     * @param task the incomplete task.
      */
     public void printMarkTaskNotDone(Task task) {
         printIndented(
@@ -115,10 +111,10 @@ public class Ui {
     }
 
     /**
-     * Displays confirmation message that a task was removed.
+     * Prints confirmation that a task was deleted.
      *
-     * @param task removed task
-     * @param size total number of tasks in task list
+     * @param task the deleted task.
+     * @param size the resulting number of tasks.
      */
     public void printDeleteTask(Task task, int size) {
         printIndented(
@@ -128,7 +124,7 @@ public class Ui {
         );
     }
 
-    /** Displays the application banner and greeting. */
+    /** Prints the application greeting. */
     public void printGreeting() {
         String greeting = """
                 %s
@@ -140,16 +136,16 @@ public class Ui {
         System.out.println(greeting);
     }
 
-    /** Displays the farewell message and closes the input scanner. */
+    /** Prints the farewell message and closes standard input. */
     public void printExitMessage() {
         echo("Bye. See you again soon!");
         scanner.close();
     }
 
     /**
-     * Displays an unrecoverable error message.
+     * Prints an initialization error message.
      *
-     * @param errorMessage error text to display
+     * @param errorMessage the error explanation.
      */
     public void printErrorMessage(String errorMessage) {
         String exitMessage = """

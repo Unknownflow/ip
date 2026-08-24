@@ -1,21 +1,21 @@
 package zen.storage;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import zen.ZenException;
-import zen.task.Deadline;
-import zen.task.TaskList;
-import zen.task.Todo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import zen.ZenException;
+import zen.task.Deadline;
+import zen.task.TaskList;
+import zen.task.Todo;
 /**
  * Tests persistence of task lists through {@link Storage}.
  */

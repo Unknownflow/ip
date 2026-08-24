@@ -2,26 +2,22 @@ package zen.task;
 
 import java.time.LocalDate;
 
-/** Defines the common state and behavior shared by every task type. */
+/** Represents a task that may be marked complete and saved to storage. */
 public abstract class Task {
     protected String description;
     protected boolean isDone;
 
     /**
-     * Creates an incomplete task with the given description.
+     * Creates an incomplete task with the supplied description.
      *
-     * @param description task description
+     * @param description the task description.
      */
     public Task(String description) {
         this.description = description;
         this.isDone = false;
     }
 
-    /**
-     * Returns the character used to display this task's completion status.
-     *
-     * @return {@code X} if the task is done; otherwise a space
-     */
+    /** Returns the icon representing this task's completion status. */
     public String getStatusIcon() {
         return (isDone ? "X" : " "); // mark done task with X
     }
@@ -36,26 +32,17 @@ public abstract class Task {
         this.isDone = false;
     }
 
-    /**
-     * Returns this task in the format used for persistent storage.
-     *
-     * @return pipe-delimited storage record
-     */
+    /** Returns this task in the format used for persistent storage. */
     public abstract String toStorageString();
 
     /**
-     * Returns whether this task occurs on the supplied date.
+     * Returns whether this task occurs on a specified date.
      *
-     * @param date date to check
-     * @return true if this task occurs on {@code date}
+     * @param date the date to check.
+     * @return true if this task occurs on {@code date}.
      */
     public abstract boolean occursOn(LocalDate date);
 
-    /**
-     * Returns the task description together with its completion status.
-     *
-     * @return human-readable task text
-     */
     @Override
     public String toString() {
         return String.format("[%s] %s", this.getStatusIcon(), this.description);

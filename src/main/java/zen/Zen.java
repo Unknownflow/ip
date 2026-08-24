@@ -6,7 +6,7 @@ import zen.storage.Storage;
 import zen.task.TaskList;
 import zen.ui.Ui;
 
-/** Start point of the Zen chatbot. */
+/** Runs the Zen command-line task manager. */
 public class Zen {
 
     private Storage storage;
@@ -14,9 +14,9 @@ public class Zen {
     private Ui ui;
 
     /**
-     * Creates the chatbot and loads any tasks stored at the given path.
+     * Creates the application and loads its saved tasks.
      *
-     * @param filePath location of the task list file
+     * @param filePath the storage location for tasks.
      */
     public Zen(String filePath) {
         ui = new Ui();
@@ -30,7 +30,7 @@ public class Zen {
         }
     }
 
-    /** Runs the command loop until the user enters the exit command. */
+    /** Runs the command-processing loop until the user exits. */
     public void run() {
         ui.printGreeting();
         boolean isExit = false;
@@ -50,7 +50,13 @@ public class Zen {
         }
     }
 
-    public static void main(String[] args) {
+    /**
+     * Starts the application using its default task storage file.
+     *
+     * @param args command-line arguments, which are not used.
+     * @throws ZenException if the application cannot initialize its task storage.
+     */
+    public static void main(String[] args) throws ZenException {
         new Zen("data/task_list.txt").run();
     }
 }
