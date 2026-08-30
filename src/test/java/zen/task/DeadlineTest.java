@@ -1,7 +1,7 @@
 package zen.task;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 
 
 public class DeadlineTest {
-    private final LocalDateTime DATE_TIME = LocalDateTime.of(2026, 10, 10, 10, 30, 0);
-    private final LocalDate DATE = DATE_TIME.toLocalDate();
-    private final String DESCRIPTION = "assignment";
+    private static final LocalDateTime DATE_TIME = LocalDateTime.of(2026, 10, 10, 10, 30, 0);
+    private static final LocalDate DATE = DATE_TIME.toLocalDate();
+    private static final String DESCRIPTION = "assignment";
 
     @Test
     public void toStorageString_isNotDone_formatsCorrectly() {

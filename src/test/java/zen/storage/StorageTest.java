@@ -87,8 +87,8 @@ public class StorageTest {
         Path filePath = temporaryDirectory.resolve("tasks.txt");
         Files.writeString(filePath, "X | 0 | unsupported task");
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> new Storage(filePath.toString()).load());
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                new Storage(filePath.toString()).load());
 
         assertEquals("Unknown task type: X", exception.getMessage());
     }

@@ -1,7 +1,7 @@
 package zen.task;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 
 
 public class EventTest {
-    private final LocalDateTime START_DATE_TIME = LocalDateTime.of(2026, 10, 10, 10, 30, 0);
-    private final LocalDateTime END_DATE_TIME = LocalDateTime.of(2026, 10, 15, 10, 30, 0);
-    private final LocalDate START_DATE = START_DATE_TIME.toLocalDate();
-    private final LocalDate END_DATE = END_DATE_TIME.toLocalDate();
-    private final String DESCRIPTION = "party";
+    private static final LocalDateTime START_DATE_TIME = LocalDateTime.of(2026, 10, 10, 10, 30, 0);
+    private static final LocalDateTime END_DATE_TIME = LocalDateTime.of(2026, 10, 15, 10, 30, 0);
+    private static final LocalDate START_DATE = START_DATE_TIME.toLocalDate();
+    private static final LocalDate END_DATE = END_DATE_TIME.toLocalDate();
+    private static final String DESCRIPTION = "party";
 
     @Test
     public void toStorageString_isNotDone_formatsCorrectly() {
