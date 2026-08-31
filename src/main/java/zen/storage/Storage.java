@@ -70,6 +70,8 @@ public class Storage {
                 return taskList;
             } catch (IOException exception) {
                 throw new ZenException("Unable to load tasks from " + filePath + ".");
+            } catch (Exception exception) {
+                throw new ZenException("Unable to load tasks. A new task list is created instead.");
             }
         } else {
             TaskList taskList = new TaskList();

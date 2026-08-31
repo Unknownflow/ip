@@ -5,11 +5,12 @@
 - **Application:** `zen.Zen`
 - **Java version:** `25`
 - **Source directory:** `src/main/java`
-- **Compile behavior:** The `test-ui` skill compiles all Java sources with `javac --release 25` into `out/ui-test` before running cases.
+- **Compile behavior:** The `test-ui` skill compiles the console application sources with `javac --release 25` into `out/ui-test` before running cases. JavaFX sources are compiled by Gradle because they require the JavaFX classpath.
 - **Isolation:** Each automated test case starts a fresh `zen.Zen` process with an empty, pre-existing `data/task_list.txt` file, unless its case provides storage data.
 - **First-run storage check:** Before release, manually run the application from a working directory that contains neither `data/` nor `data/task_list.txt`. Enter `todo first task`, then `bye`. Verify that the application continues normally and creates `data/task_list.txt` containing `T | 0 | first task`. This manual check is required because the automated runner deliberately pre-creates the storage file for every case.
 - **Comparison:** Expected output is exact after normalizing line endings and ignoring only the final line-ending produced by the process.
 - **Failure policy:** Stop immediately at the first failed case and report both expected and actual output.
+- **GUI smoke check:** Run `./gradlew run`, enter `todo buy milk`, then `list`, and verify that each command and its response appear as paired chat bubbles. Enter `bye` and verify that the farewell appears and the text field and Send button are disabled. Start again with malformed storage data and verify that the load error appears in a chatbot bubble.
 
 ## Test cases
 

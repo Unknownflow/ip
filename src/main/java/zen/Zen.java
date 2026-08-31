@@ -6,12 +6,20 @@ import zen.storage.Storage;
 import zen.task.TaskList;
 import zen.ui.Ui;
 
-/** Runs the Zen command-line task manager. */
+/** Runs the Zen task manager through either its console or graphical interface. */
 public class Zen {
 
-    private Storage storage;
+    private static final String NAME = "Zen";
+    private static final String GREETING = """
+                Hello! I'm %s.
+                What can I do for you?
+                """.formatted(NAME).strip();
+
+    private final Storage storage;
     private TaskList taskList;
-    private Ui ui;
+    private final Ui ui;
+    private final String initializationError;
+    private boolean isExit;
 
     /**
      * Creates the application and loads its saved tasks.
@@ -21,20 +29,22 @@ public class Zen {
     public Zen(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
+        ui.printGreeting(GREETING);
 
+        String loadingError = "";
         try {
             taskList = storage.load();
         } catch (ZenException e) {
             ui.printErrorMessage(e.getMessage());
             taskList = new TaskList();
+            loadingError = e.getMessage();
         }
+        initializationError = loadingError;
     }
 
     /** Runs the command-processing loop until the user exits. */
     public void run() {
-        ui.printGreeting();
-        boolean isExit = false;
-
+        ui.printGreeting(GREETING);
         while (!isExit) {
             try {
                 String fullCommand = ui.readCommand();
@@ -57,5 +67,55 @@ public class Zen {
      */
     public static void main(String[] args) {
         new Zen("data/task_list.txt").run();
+    }
+
+    /**
+     * Processes one command received from the graphical user interface.
+     *
+     * @param input command entered by the user
+     * @return the chatbot's response to the command
+     */
+    public String getResponse(String input) {
+        ui.clearResponse();
+        if (!isExit) {
+            try {
+                ui.printDivider();
+                Command command = Parser.parse(input);
+                command.execute(taskList, ui, storage);
+                isExit = command.isExit();
+            } catch (ZenException e) {
+                ui.echo(e.getMessage());
+            } finally {
+                ui.printDivider();
+            }
+        }
+        return ui.getResponse();
+    }
+
+    /**
+     * Returns the greeting shared by the graphical and console interfaces.
+     *
+     * @return application greeting
+     */
+    public String getGreeting() {
+        return GREETING;
+    }
+
+    /**
+     * Returns the message explaining why stored tasks could not be loaded.
+     *
+     * @return initialization error, or an empty string when loading succeeds
+     */
+    public String getInitializationError() {
+        return initializationError;
+    }
+
+    /**
+     * Returns whether the chatbot has processed an exit command.
+     *
+     * @return true if the chatbot no longer accepts commands
+     */
+    public boolean hasExited() {
+        return isExit;
     }
 }

@@ -8,21 +8,22 @@ import zen.task.TaskList;
 /** Handles console input and output for the Zen application. */
 public class Ui {
     private static final String DIVIDER = "____________________________________________________________";
-    private static final String NAME = "Zen";
     private static final String INDENTATION = " ".repeat(5);
     private static final String INDENTED_DIVIDER = " ".repeat(4) + DIVIDER;
     private static final String BANNER = """
-                 ______             \s
-                |__  /___  _ __     \s
-                  / // _ \\| '_ \\  \s
-                 / /|  __/| | | |   \s
-                /____\\___||_| |_|\
-            """;
+            ______             \s
+           |__  /___  _ __     \s
+             / // _ \\| '_ \\  \s
+            / /|  __/| | | |   \s
+           /____\\___||_| |_|\
+           """;
     private final Scanner scanner;
+    private final StringBuilder response;
 
     /** Creates a user interface that reads commands from standard input. */
     public Ui() {
         this.scanner = new Scanner(System.in);
+        this.response = new StringBuilder();
     }
 
     /** Returns the next trimmed command read from standard input. */
@@ -44,6 +45,34 @@ public class Ui {
         }
     }
 
+    /**
+     * Records lines that the graphical user interface displays after a command.
+     *
+     * @param lines response lines to record
+     */
+    private void recordResponse(String... lines) {
+        for (String line : lines) {
+            if (!response.isEmpty()) {
+                response.append('\n');
+            }
+            response.append(line);
+        }
+    }
+
+    /** Clears the response accumulated for the previous command. */
+    public void clearResponse() {
+        response.setLength(0);
+    }
+
+    /**
+     * Returns the response accumulated while executing the current command.
+     *
+     * @return the command response without console indentation
+     */
+    public String getResponse() {
+        return response.toString();
+    }
+
     /** Prints a divider between console messages. */
     public void printDivider() {
         System.out.println(INDENTED_DIVIDER);
@@ -56,20 +85,22 @@ public class Ui {
      * @param size the resulting number of tasks.
      */
     public void printAddTask(Task task, int size) {
-        printIndented(
-                "Got it. I've added this task:",
-                String.format("  %s", task),
-                String.format("Now you have %d tasks in the list.", size)
-        );
+        String[] lines = {
+            "Got it. I've added this task:",
+            String.format("  %s", task),
+            String.format("Now you have %d tasks in the list.", size)
+        };
+        echo(lines);
     }
 
     /**
-     * Prints a message with the standard console indentation.
+     * Prints the message with the standard console indentation and records it for the GUI.
      *
-     * @param echoString the message to print.
+     * @param lines the message to print.
      */
-    public void echo(String echoString) {
-        printIndented(echoString);
+    public void echo(String... lines) {
+        printIndented(lines);
+        recordResponse(lines);
     }
 
     /**
@@ -79,10 +110,9 @@ public class Ui {
      */
     public void printTaskList(TaskList taskList) {
         if (taskList.isEmpty()) {
-            printIndented("Your task list is currently empty.");
+            echo("Your task list is currently empty.");
         } else {
-            printIndented("Here are the tasks in your list:");
-            printIndented(taskList.toString());
+            echo("Here are the tasks in your list:", taskList.toString());
         }
     }
 
@@ -93,10 +123,9 @@ public class Ui {
      */
     public void printMatchingTasks(TaskList taskList) {
         if (taskList.isEmpty()) {
-            printIndented("No matching tasks in your list.");
+            echo("No matching tasks in your list.");
         } else {
-            printIndented("Here are the matching tasks in your list:");
-            printIndented(taskList.toString());
+            echo("Here are the matching tasks in your list:", taskList.toString());
         }
     }
 
@@ -106,10 +135,11 @@ public class Ui {
      * @param task the completed task.
      */
     public void printMarkTaskDone(Task task) {
-        printIndented(
-                "Nice! I've marked this task as done:",
-                String.format("  %s", task)
-        );
+        String[] lines = {
+            "Nice! I've marked this task as done:",
+            String.format("  %s", task)
+        };
+        echo(lines);
     }
 
     /**
@@ -118,10 +148,11 @@ public class Ui {
      * @param task the incomplete task.
      */
     public void printMarkTaskNotDone(Task task) {
-        printIndented(
-                "OK, I've marked this task as not done yet:",
-                String.format("  %s", task)
-        );
+        String[] lines = {
+            "OK, I've marked this task as not done yet:",
+            String.format("  %s", task)
+        };
+        echo(lines);
     }
 
     /**
@@ -131,23 +162,21 @@ public class Ui {
      * @param size the resulting number of tasks.
      */
     public void printDeleteTask(Task task, int size) {
-        printIndented(
-                "Noted. I've removed this task:",
-                String.format("  %s", task),
-                String.format("Now you have %s tasks in the list.", size)
-        );
+        String[] lines = {
+            "Noted. I've removed this task:",
+            String.format("  %s", task),
+            String.format("Now you have %s tasks in the list.", size)
+        };
+        echo(lines);
     }
 
-    /** Prints the application greeting. */
-    public void printGreeting() {
-        String greeting = """
-                %s
-                %s
-                    Hello! I'm %s.
-                    What can I do for you?
-                %s
-                """.formatted(INDENTED_DIVIDER, BANNER, NAME, INDENTED_DIVIDER);
-        System.out.println(greeting);
+    /**
+     * Prints the application greeting surrounded by console dividers.
+     *
+     * @param greeting greeting shared with the graphical interface
+     */
+    public void printGreeting(String greeting) {
+        echo(DIVIDER, BANNER, greeting, DIVIDER);
     }
 
     /** Prints the farewell message and closes standard input. */
