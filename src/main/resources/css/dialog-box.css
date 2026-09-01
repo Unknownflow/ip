@@ -1,37 +1,22 @@
 .label {
-    -fx-background-color: linear-gradient(to bottom right, #00ffbf, #00ddff);
-    -fx-border-color: #d55e00 #009e73 #cc79a7 #0072b2;
-    -fx-border-width: 2px;
-    -fx-background-radius: 1em 1em 0 1em;
-    -fx-border-radius: 1em 1em 0 1em;
+    -fx-background-color: #dfe9d9;
+    -fx-background-radius: 16 16 3 16;
+    -fx-border-color: #c2d0bd;
+    -fx-border-radius: 16 16 3 16;
+    -fx-border-width: 1px;
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-text-fill: #294033;
 }
 
 .reply-label {
-    -fx-background-radius: 1em 1em 1em 0;
-    -fx-border-radius: 1em 1em 1em 0;
-}
-
-.add-label {
-    -fx-background-color: yellow;
-}
-
-.marked-label {
-    -fx-background-color: palegreen;
-}
-
-.delete-label {
-    -fx-background-color: lightpink;
+    -fx-background-color: #fffdf7;
+    -fx-background-radius: 16 16 16 3;
+    -fx-border-color: #ddd8ca;
+    -fx-border-radius: 16 16 16 3;
+    -fx-text-fill: #3f4840;
 }
 
 #displayPicture {
-    /* Shadow effect on image. */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.5, 5, 5);
-
-    /* Change size of image. */
-    -fx-scale-x: 1;
-    -fx-scale-y: 1;
-
-    /* Rotate image clockwise by degrees. */
-    -fx-rotate: 0;
+    -fx-effect: dropshadow(gaussian, rgba(54, 68, 56, 0.18), 8, 0.25, 1, 2);
 }
-
