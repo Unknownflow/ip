@@ -34,7 +34,7 @@ public class TaskList {
     public Task deleteTask(int taskNum) throws ZenException {
         if (!isValidTaskNumber(taskNum)) {
             if (this.isEmpty()) {
-                throw new ZenException("Task list is empty. Add new tasks into task list.");
+                throw new ZenException("The task list is empty. Add a task first.");
             } else {
                 throw new ZenException("Maximum task number is " + this.size() + ".");
             }
@@ -62,7 +62,7 @@ public class TaskList {
     public Task markTask(int taskNum) throws ZenException {
         if (!isValidTaskNumber(taskNum)) {
             if (this.isEmpty()) {
-                throw new ZenException("Task list is empty. Add new tasks into task list.");
+                throw new ZenException("The task list is empty. Add a task first.");
             } else {
                 throw new ZenException("Maximum task number is " + this.size() + ".");
             }
@@ -82,7 +82,7 @@ public class TaskList {
     public Task unmarkTask(int taskNum) throws ZenException {
         if (!isValidTaskNumber(taskNum)) {
             if (this.isEmpty()) {
-                throw new ZenException("Task list is empty. Add new tasks into task list.");
+                throw new ZenException("The task list is empty. Add a task first.");
             } else {
                 throw new ZenException("Maximum task number is " + this.size() + ".");
             }

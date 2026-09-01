@@ -23,7 +23,7 @@ public class TodoCommand extends AddCommand {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws ZenException {
         if (description.isEmpty()) {
-            throw new ZenException("The description of a Todo cannot be empty. Please try again!");
+            throw new ZenException("The to-do description cannot be empty. Please try again.");
         }
         addTask(new Todo(description), tasks, ui, storage);
     }

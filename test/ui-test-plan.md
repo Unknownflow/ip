@@ -5,11 +5,12 @@
 - **Application:** `zen.Zen`
 - **Java version:** `25`
 - **Source directory:** `src/main/java`
-- **Compile behavior:** The `test-ui` skill compiles all Java sources with `javac --release 25` into `out/ui-test` before running cases.
+- **Compile behavior:** The `test-ui` skill compiles the console application sources with `javac --release 25` into `out/ui-test` before running cases. JavaFX sources are compiled by Gradle because they require the JavaFX classpath.
 - **Isolation:** Each automated test case starts a fresh `zen.Zen` process with an empty, pre-existing `data/task_list.txt` file, unless its case provides storage data.
 - **First-run storage check:** Before release, manually run the application from a working directory that contains neither `data/` nor `data/task_list.txt`. Enter `todo first task`, then `bye`. Verify that the application continues normally and creates `data/task_list.txt` containing `T | 0 | first task`. This manual check is required because the automated runner deliberately pre-creates the storage file for every case.
 - **Comparison:** Expected output is exact after normalizing line endings and ignoring only the final line-ending produced by the process.
 - **Failure policy:** Stop immediately at the first failed case and report both expected and actual output.
+- **GUI smoke check:** Run `./gradlew run`, enter `todo buy milk`, then `list`, and verify that each command and its response appear as paired chat bubbles. Enter `bye` and verify that the farewell appears and the text field and Send button are disabled. Start again with malformed storage data and verify that the load error appears in a chatbot bubble.
 
 ## Test cases
 
@@ -63,7 +64,7 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     Command not found. Please try again!
+     I don't understand that command. Please try again.
     ____________________________________________________________
     ____________________________________________________________
      Your task list is currently empty.
@@ -99,7 +100,7 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] buy milk
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -134,7 +135,7 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     The description of a Todo cannot be empty. Please try again!
+     The to-do description cannot be empty. Please try again.
     ____________________________________________________________
     ____________________________________________________________
      Your task list is currently empty.
@@ -171,12 +172,12 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [D][ ] submit report (by: Aug 24 2026 18:00:00)
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [E][ ] team meeting (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00)
-     Now you have 2 tasks in the list.
+     You now have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -214,15 +215,15 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     Please include /by in your event to separate description and due by.
-     Deadline Format: deadline <description> /by yyyy-MM-dd HH:mm:ss
+     Please include /by in your deadline to separate the description from the due date and time.
+     Deadline format: deadline <description> /by yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Please include /to in your event.
-     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
+     Event format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
-     The description of a Todo cannot be empty. Please try again!
+     The to-do description cannot be empty. Please try again.
     ____________________________________________________________
     ____________________________________________________________
      Your task list is currently empty.
@@ -261,7 +262,7 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] submit form
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Nice! I've marked this task as done:
@@ -272,7 +273,7 @@ bye
      1.[T][X] submit form
     ____________________________________________________________
     ____________________________________________________________
-     OK, I've marked this task as not done yet:
+     Okay, I've marked this task as not done:
        [T][ ] submit form
     ____________________________________________________________
     ____________________________________________________________
@@ -312,14 +313,14 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] keep this
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Nice! I've marked this task as done:
        [T][X] keep this
     ____________________________________________________________
     ____________________________________________________________
-     Command not found. Please try again!
+     I don't understand that command. Please try again.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -357,12 +358,12 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] alpha
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] beta
-     Now you have 2 tasks in the list.
+     You now have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -399,13 +400,13 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     Please include only one /by in your event to separate description and due by.
-     Deadline Format: deadline <description> /by yyyy-MM-dd HH:mm:ss
+     Please include only one /by in your deadline to separate the description from the due date and time.
+     Deadline format: deadline <description> /by yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] recovered
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -442,7 +443,7 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [E][ ] project sync (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:30:00)
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -479,17 +480,17 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     The description of an Event cannot be empty. Please try again.
-     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
+     The event description cannot be empty. Please try again.
+     Event format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
-     The start time of an Event cannot be empty. Please try again!
-     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
+     The event start time cannot be empty. Please try again.
+     Event format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] recovered event
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -530,7 +531,7 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] repeat state
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Nice! I've marked this task as done:
@@ -541,11 +542,11 @@ bye
        [T][X] repeat state
     ____________________________________________________________
     ____________________________________________________________
-     OK, I've marked this task as not done yet:
+     Okay, I've marked this task as not done:
        [T][ ] repeat state
     ____________________________________________________________
     ____________________________________________________________
-     OK, I've marked this task as not done yet:
+     Okay, I've marked this task as not done:
        [T][ ] repeat state
     ____________________________________________________________
     ____________________________________________________________
@@ -585,15 +586,15 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] first
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
-     Command not found. Please try again!
+     I don't understand that command. Please try again.
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] second
-     Now you have 2 tasks in the list.
+     You now have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -635,7 +636,7 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] after empty list
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -671,12 +672,12 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     The description of a Todo cannot be empty. Please try again!
+     The to-do description cannot be empty. Please try again.
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] valid after whitespace
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -713,7 +714,7 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [D][ ] pay bills (by: Aug 24 2026 18:00:00)
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -749,13 +750,13 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     The description of a Deadline cannot be empty. Please try again!
-     Deadline Format: deadline <description> /by yyyy-MM-dd HH:mm:ss
+     The deadline description cannot be empty. Please try again.
+     Deadline format: deadline <description> /by yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] after bad deadline
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -792,7 +793,7 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [E][ ] design review (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00)
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -828,13 +829,13 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     Please include only 1 /to in your event.
-     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
+     Please include only one /to in your event.
+     Event format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [E][ ] recovered (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00)
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -871,7 +872,7 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] call /by support? #2
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -907,13 +908,13 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     The start time of an Event cannot be empty. Please try again!
-     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
+     The event start time cannot be empty. Please try again.
+     Event format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] after bad event
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -952,12 +953,12 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] first task
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] second task
-     Now you have 2 tasks in the list.
+     You now have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Nice! I've marked this task as done:
@@ -998,13 +999,13 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     The end time of an Event cannot be empty. Please try again!
-     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
+     The event end time cannot be empty. Please try again.
+     Event format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] after empty event
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -1044,20 +1045,20 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] saved task
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Nice! I've marked this task as done:
        [T][X] saved task
     ____________________________________________________________
     ____________________________________________________________
-     OK, I've marked this task as not done yet:
+     Okay, I've marked this task as not done:
        [T][ ] saved task
     ____________________________________________________________
     ____________________________________________________________
      Noted. I've removed this task:
        [T][ ] saved task
-     Now you have 0 tasks in the list.
+     You now have 0 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Your task list is currently empty.
@@ -1099,7 +1100,7 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] stable task
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Nice! I've marked this task as done:
@@ -1112,14 +1113,14 @@ bye
      Maximum task number is 1.
     ____________________________________________________________
     ____________________________________________________________
-     Only positive integers are allowed for task number.
+     The task number must be a positive integer.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
      1.[T][X] stable task
     ____________________________________________________________
     ____________________________________________________________
-     OK, I've marked this task as not done yet:
+     Okay, I've marked this task as not done:
        [T][ ] stable task
     ____________________________________________________________
     ____________________________________________________________
@@ -1163,12 +1164,12 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] first
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] second
-     Now you have 2 tasks in the list.
+     You now have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Maximum task number is 2.
@@ -1177,7 +1178,7 @@ bye
      Maximum task number is 2.
     ____________________________________________________________
     ____________________________________________________________
-     Only positive integers are allowed for task number.
+     The task number must be a positive integer.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -1187,7 +1188,7 @@ bye
     ____________________________________________________________
      Noted. I've removed this task:
        [T][ ] first
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -1226,16 +1227,16 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [D][ ] submit form (by: Aug 24 2026 18:00:00)
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      /from must come before /to.
-     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
+     Event format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [E][ ] project meeting (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00)
-     Now you have 2 tasks in the list.
+     You now have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -1275,7 +1276,7 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] before invalid list
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      The list command does not take arguments.
@@ -1283,7 +1284,7 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] after invalid list
-     Now you have 2 tasks in the list.
+     You now have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -1365,31 +1366,31 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [D][ ] submit report (by: Aug 24 2026 18:00:00)
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [E][ ] overnight deployment (from: Aug 23 2026 23:00:00 to: Aug 24 2026 01:00:00)
-     Now you have 2 tasks in the list.
+     You now have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] unrelated
-     Now you have 3 tasks in the list.
+     You now have 3 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
-     Tasks for 2026-08-24
+     Tasks on 2026-08-24:
      Here are the tasks in your list:
      1.[D][ ] submit report (by: Aug 24 2026 18:00:00)
      2.[E][ ] overnight deployment (from: Aug 23 2026 23:00:00 to: Aug 24 2026 01:00:00)
     ____________________________________________________________
     ____________________________________________________________
-     Tasks for 2026-08-25
+     Tasks on 2026-08-25:
      Your task list is currently empty.
     ____________________________________________________________
     ____________________________________________________________
-     The date is in the incorrect format.
-      Correct format: yyyy-MM-dd
+     The date is not in the correct format.
+     Correct format: yyyy-MM-dd
     ____________________________________________________________
     ____________________________________________________________
      Bye. See you again soon!
@@ -1423,21 +1424,21 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     The due by datetime is in the incorrect format.
-     Deadline Format: deadline <description> /by yyyy-MM-dd HH:mm:ss
+     The due date and time must follow the required format.
+     Deadline format: deadline <description> /by yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
-     The start / end datetime is in the incorrect format.
-     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
+     The start and end date and time must follow the required format.
+     Event format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
-     The start datetime is after the end datetime.
-     Event Format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
+     The start date and time is after the end date and time.
+     Event format: event <description> /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] recovered
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the tasks in your list:
@@ -1477,17 +1478,17 @@ bye
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] read book
-     Now you have 1 tasks in the list.
+     You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [D][ ] return book (by: Jun 06 2026 18:00:00)
-     Now you have 2 tasks in the list.
+     You now have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:
        [T][ ] Book club
-     Now you have 3 tasks in the list.
+     You now have 3 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
      Here are the matching tasks in your list:
@@ -1527,13 +1528,13 @@ bye
     ____________________________________________________________
 
     ____________________________________________________________
-     Task list is empty. Add new tasks into task list.
+     The task list is empty. Add a task first.
     ____________________________________________________________
     ____________________________________________________________
-     Task list is empty. Add new tasks into task list.
+     The task list is empty. Add a task first.
     ____________________________________________________________
     ____________________________________________________________
-     Task list is empty. Add new tasks into task list.
+     The task list is empty. Add a task first.
     ____________________________________________________________
     ____________________________________________________________
      Bye. See you again soon!
