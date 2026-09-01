@@ -9,7 +9,8 @@ import zen.task.TaskList;
 public class Ui {
     private static final String DIVIDER = "____________________________________________________________";
     private static final String INDENTATION = " ".repeat(5);
-    private static final String INDENTED_DIVIDER = " ".repeat(4) + DIVIDER;
+    private static final String GREETING_INDENTATION = " ".repeat(4);
+    private static final String INDENTED_DIVIDER = GREETING_INDENTATION + DIVIDER;
     private static final String BANNER = """
             ______             \s
            |__  /___  _ __     \s
@@ -88,7 +89,7 @@ public class Ui {
         String[] lines = {
             "Got it. I've added this task:",
             String.format("  %s", task),
-            String.format("Now you have %d tasks in the list.", size)
+            getTaskCountMessage(size)
         };
         echo(lines);
     }
@@ -149,7 +150,7 @@ public class Ui {
      */
     public void printMarkTaskNotDone(Task task) {
         String[] lines = {
-            "OK, I've marked this task as not done yet:",
+            "Okay, I've marked this task as not done:",
             String.format("  %s", task)
         };
         echo(lines);
@@ -165,9 +166,20 @@ public class Ui {
         String[] lines = {
             "Noted. I've removed this task:",
             String.format("  %s", task),
-            String.format("Now you have %s tasks in the list.", size)
+            getTaskCountMessage(size)
         };
         echo(lines);
+    }
+
+    /**
+     * Returns a grammatically correct message describing the current number of tasks.
+     *
+     * @param size number of tasks in the list
+     * @return task-count message
+     */
+    private static String getTaskCountMessage(int size) {
+        String taskWord = size == 1 ? "task" : "tasks";
+        return String.format("You now have %d %s in the list.", size, taskWord);
     }
 
     /**
@@ -176,7 +188,23 @@ public class Ui {
      * @param greeting greeting shared with the graphical interface
      */
     public void printGreeting(String greeting) {
-        echo(DIVIDER, BANNER, greeting, DIVIDER);
+        printDivider();
+        printGreetingContent(BANNER, greeting);
+        printDivider();
+        System.out.println();
+    }
+
+    /**
+     * Prints greeting lines using the divider's indentation.
+     *
+     * @param lines greeting lines to print
+     */
+    private static void printGreetingContent(String... lines) {
+        for (String line : lines) {
+            for (String individualLine : line.split("\\R")) {
+                System.out.println(GREETING_INDENTATION + individualLine);
+            }
+        }
     }
 
     /** Prints the farewell message and closes standard input. */

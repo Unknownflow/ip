@@ -29,7 +29,6 @@ public class Zen {
     public Zen(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
-        ui.printGreeting(GREETING);
 
         String loadingError = "";
         try {

@@ -13,8 +13,8 @@ import zen.task.Event;
 public class Parser {
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String DATE_TIME_FORMAT = DATE_FORMAT + " HH:mm:ss";
-    private static final String DEADLINE_FORMAT = "\nDeadline Format: deadline <description> /by " + DATE_TIME_FORMAT;
-    private static final String EVENT_FORMAT = String.format("\nEvent Format: event <description> /from %s /to %s",
+    private static final String DEADLINE_FORMAT = "\nDeadline format: deadline <description> /by " + DATE_TIME_FORMAT;
+    private static final String EVENT_FORMAT = String.format("\nEvent format: event <description> /from %s /to %s",
             DATE_TIME_FORMAT, DATE_TIME_FORMAT);
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 
@@ -72,7 +72,7 @@ public class Parser {
         try {
             return LocalDate.parse(arguments);
         } catch (DateTimeParseException e) {
-            throw new ZenException("The date is in the incorrect format.\n Correct format: "
+            throw new ZenException("The date is not in the correct format.\nCorrect format: "
                     + DATE_FORMAT);
         }
     }
@@ -86,7 +86,7 @@ public class Parser {
      */
     public static int parseTaskNumber(String arguments) throws ZenException {
         if (!arguments.matches("\\d+")) {
-            throw new ZenException("Only positive integers are allowed for task number.");
+            throw new ZenException("The task number must be a positive integer.");
         }
         return Integer.parseInt(arguments);
     }
@@ -105,25 +105,27 @@ public class Parser {
         int byIdx = userInput.indexOf("/by");
 
         if (byIdx == -1) {
-            throw new ZenException("Please include /by in your event to separate description and due by."
+            throw new ZenException("Please include /by in your deadline to separate the description "
+                    + "from the due date and time."
                     + DEADLINE_FORMAT);
         }
 
         String description = userInput.substring(0, byIdx).trim();
         if (description.isEmpty()) {
-            throw new ZenException("The description of a Deadline cannot be empty. Please try again!"
+            throw new ZenException("The deadline description cannot be empty. Please try again."
                     + DEADLINE_FORMAT);
         }
 
         int nextByIdx = userInput.indexOf("/by", byIdx + "/by".length());
         if (nextByIdx != -1) {
-            throw new ZenException("Please include only one /by in your event to separate description and due by."
+            throw new ZenException("Please include only one /by in your deadline to separate the description "
+                    + "from the due date and time."
                     + DEADLINE_FORMAT);
         }
 
         String dueBy = userInput.substring(byIdx + "/by".length()).trim();
         if (dueBy.isEmpty()) {
-            throw new ZenException("The due by date / time cannot be empty. Please try again!"
+            throw new ZenException("The due date and time cannot be empty. Please try again."
                     + DEADLINE_FORMAT);
         }
 
@@ -131,7 +133,7 @@ public class Parser {
             LocalDateTime dateTime = LocalDateTime.parse(dueBy, DATE_TIME_FORMATTER);
             return new Deadline(description, dateTime);
         } catch (DateTimeParseException e) {
-            throw new ZenException("The due by datetime is in the incorrect format."
+            throw new ZenException("The due date and time must follow the required format."
                     + DEADLINE_FORMAT);
         }
     }
@@ -152,7 +154,7 @@ public class Parser {
         int toIdx = userInput.indexOf("/to");
 
         if (fromIdx == -1) {
-            throw new ZenException("Please include /from in your event to separate description and timings."
+            throw new ZenException("Please include /from in your event to separate the description from the timings."
                     + EVENT_FORMAT);
         }
         if (toIdx == -1) {
@@ -163,10 +165,10 @@ public class Parser {
         }
 
         if (userInput.indexOf("/from", fromIdx + "/from".length()) != -1) {
-            throw new ZenException("Please include only 1 /from in your event." + EVENT_FORMAT);
+            throw new ZenException("Please include only one /from in your event." + EVENT_FORMAT);
         }
         if (userInput.indexOf("/to", toIdx + "/to".length()) != -1) {
-            throw new ZenException("Please include only 1 /to in your event." + EVENT_FORMAT);
+            throw new ZenException("Please include only one /to in your event." + EVENT_FORMAT);
         }
 
         String description = userInput.substring(0, fromIdx).trim();
@@ -174,13 +176,13 @@ public class Parser {
         String end = userInput.substring(toIdx + "/to".length()).trim();
 
         if (description.isEmpty()) {
-            throw new ZenException("The description of an Event cannot be empty. Please try again." + EVENT_FORMAT);
+            throw new ZenException("The event description cannot be empty. Please try again." + EVENT_FORMAT);
         }
         if (start.isEmpty()) {
-            throw new ZenException("The start time of an Event cannot be empty. Please try again!" + EVENT_FORMAT);
+            throw new ZenException("The event start time cannot be empty. Please try again." + EVENT_FORMAT);
         }
         if (end.isEmpty()) {
-            throw new ZenException("The end time of an Event cannot be empty. Please try again!" + EVENT_FORMAT);
+            throw new ZenException("The event end time cannot be empty. Please try again." + EVENT_FORMAT);
         }
 
         try {
@@ -188,12 +190,12 @@ public class Parser {
             LocalDateTime endDateTime = LocalDateTime.parse(end, DATE_TIME_FORMATTER);
 
             if (startDateTime.isAfter(endDateTime)) {
-                throw new ZenException("The start datetime is after the end datetime." + EVENT_FORMAT);
+                throw new ZenException("The start date and time is after the end date and time." + EVENT_FORMAT);
             } else {
                 return new Event(description, startDateTime, endDateTime);
             }
         } catch (DateTimeParseException e) {
-            throw new ZenException("The start / end datetime is in the incorrect format."
+            throw new ZenException("The start and end date and time must follow the required format."
                     + EVENT_FORMAT);
         }
     }
