@@ -18,7 +18,14 @@ public class DeadlineCommand extends AddCommand {
         this.arguments = arguments;
     }
 
-    /** Adds the deadline described by this command. */
+    /**
+     * Adds the parsed deadline task, displays a confirmation, and saves the updated task list.
+     *
+     * @param tasks task list to which the deadline is added
+     * @param ui user interface used to display the confirmation
+     * @param storage storage service used to save the updated task list
+     * @throws ZenException if the deadline details are invalid or the updated task list cannot be saved
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws ZenException {
         addTask(Parser.parseDeadline(arguments), tasks, ui, storage);

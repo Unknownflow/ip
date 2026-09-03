@@ -38,7 +38,7 @@ public abstract class Task {
      * @param keyword the case-sensitive keyword to search for
      * @return true if the description contains the keyword, false otherwise
      */
-    public boolean descriptionContains(String keyword) {
+    public boolean containsKeyword(String keyword) {
         return description.contains(keyword);
     }
 
