@@ -109,7 +109,7 @@ public class TaskList {
      * @param keyword the case-sensitive description keyword to filter tasks by
      * @return a task list containing only tasks whose descriptions contain the keyword
      */
-    public TaskList getAllTasksBasedOnDescription(String keyword) {
+    public TaskList findTasksByDescription(String keyword) {
         TaskList matchingTasks = new TaskList();
 
         for (Task task : tasks) {
@@ -129,15 +129,15 @@ public class TaskList {
      * @return a task list containing only tasks that occur on the specified date
      */
     public TaskList getAllTasksOnDate(LocalDate date) {
-        TaskList newTaskList = new TaskList();
+        TaskList tasksOnDate = new TaskList();
 
         for (Task task : tasks) {
             if (task.occursOn(date)) {
-                newTaskList.addTask(task);
+                tasksOnDate.addTask(task);
             }
         }
 
-        return newTaskList;
+        return tasksOnDate;
     }
 
     /**

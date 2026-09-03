@@ -21,7 +21,7 @@ public class TaskListTest {
                 LocalDateTime.of(2026, 6, 7, 19, 0)));
         tasks.addTask(new Todo("write essay"));
 
-        TaskList matchingTasks = tasks.getAllTasksBasedOnDescription("book");
+        TaskList matchingTasks = tasks.findTasksByDescription("book");
 
         assertEquals(3, matchingTasks.size());
         assertEquals("1.[T][ ] read book\n2.[D][ ] return book (by: Jun 06 2026 18:00:00)\n"
@@ -34,8 +34,8 @@ public class TaskListTest {
         TaskList tasks = new TaskList();
         tasks.addTask(new Todo("read Book"));
 
-        TaskList noKeywordMatch = tasks.getAllTasksBasedOnDescription("notes");
-        TaskList differentCaseMatch = tasks.getAllTasksBasedOnDescription("book");
+        TaskList noKeywordMatch = tasks.findTasksByDescription("notes");
+        TaskList differentCaseMatch = tasks.findTasksByDescription("book");
 
         assertTrue(noKeywordMatch.isEmpty());
         assertTrue(differentCaseMatch.isEmpty());

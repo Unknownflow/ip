@@ -21,6 +21,6 @@ public class FindCommand extends Command {
     /** Displays the tasks whose descriptions contain this command's keyword. */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws ZenException {
-        ui.printMatchingTasks(tasks.getAllTasksBasedOnDescription(arguments));
+        ui.printMatchingTasks(tasks.findTasksByDescription(arguments));
     }
 }
