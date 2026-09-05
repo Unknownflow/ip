@@ -83,13 +83,13 @@ public class StorageTest {
 
     // AI-assisted
     @Test
-    public void load_unknownTaskType_throwsIllegalArgumentException() throws IOException {
+    public void load_unknownTaskType_throwsZenException() throws IOException {
         Path filePath = temporaryDirectory.resolve("tasks.txt");
         Files.writeString(filePath, "X | 0 | unsupported task");
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        ZenException exception = assertThrows(ZenException.class, () ->
                 new Storage(filePath.toString()).load());
 
-        assertEquals("Unknown task type: X", exception.getMessage());
+        assertEquals("Unable to load tasks. A new task list is created instead.", exception.getMessage());
     }
 }
