@@ -56,27 +56,27 @@ public class Storage {
      * @throws ZenException if the storage directory or file is missing, or cannot be read
      */
     public TaskList load() throws ZenException {
-        if (Files.exists(filePath)) {
-            try {
-                TaskList taskList = new TaskList();
-                List<String> taskRecords = Files.readAllLines(filePath);
-
-                for (String taskRecord : taskRecords) {
-                    if (!taskRecord.isBlank()) {
-                        taskList.addTask(parseTask(taskRecord));
-                    }
-                }
-
-                return taskList;
-            } catch (IOException exception) {
-                throw new ZenException("Unable to load tasks from " + filePath + ".");
-            } catch (Exception exception) {
-                throw new ZenException("Unable to load tasks. A new task list is created instead.");
-            }
-        } else {
+        if (!Files.exists(filePath)) {
             TaskList taskList = new TaskList();
             save(taskList);
             return taskList;
+        }
+
+        try {
+            TaskList taskList = new TaskList();
+            List<String> taskRecords = Files.readAllLines(filePath);
+
+            for (String taskRecord : taskRecords) {
+                if (!taskRecord.isBlank()) {
+                    taskList.addTask(parseTask(taskRecord));
+                }
+            }
+
+            return taskList;
+        } catch (IOException exception) {
+            throw new ZenException("Unable to load tasks from " + filePath + ".");
+        } catch (Exception exception) {
+            throw new ZenException("Unable to load tasks. A new task list is created instead.");
         }
     }
 

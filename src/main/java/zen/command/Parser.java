@@ -13,9 +13,11 @@ import zen.task.Event;
 public class Parser {
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String DATE_TIME_FORMAT = DATE_FORMAT + " HH:mm:ss";
+    private static final String EVENT_FROM_DELIMITER = "/from";
+    private static final String EVENT_TO_DELIMITER = "/to";
     private static final String DEADLINE_FORMAT = "\nDeadline format: deadline <description> /by " + DATE_TIME_FORMAT;
-    private static final String EVENT_FORMAT = String.format("\nEvent format: event <description> /from %s /to %s",
-            DATE_TIME_FORMAT, DATE_TIME_FORMAT);
+    private static final String EVENT_FORMAT = String.format("\nEvent format: event <description> %s %s %s %s",
+            EVENT_FROM_DELIMITER, DATE_TIME_FORMAT, EVENT_TO_DELIMITER, DATE_TIME_FORMAT);
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 
     /**
@@ -150,31 +152,59 @@ public class Parser {
      *                       description, start, or end value is empty.
      */
     public static Event parseEvent(String userInput) throws ZenException {
-        int fromIdx = userInput.indexOf("/from");
-        int toIdx = userInput.indexOf("/to");
+        int fromIdx = userInput.indexOf(EVENT_FROM_DELIMITER);
+        int toIdx = userInput.indexOf(EVENT_TO_DELIMITER);
 
-        if (fromIdx == -1) {
-            throw new ZenException("Please include /from in your event to separate the description from the timings."
-                    + EVENT_FORMAT);
-        }
-        if (toIdx == -1) {
-            throw new ZenException("Please include /to in your event." + EVENT_FORMAT);
-        }
-        if (fromIdx > toIdx) {
-            throw new ZenException("/from must come before /to." + EVENT_FORMAT);
-        }
-
-        if (userInput.indexOf("/from", fromIdx + "/from".length()) != -1) {
-            throw new ZenException("Please include only one /from in your event." + EVENT_FORMAT);
-        }
-        if (userInput.indexOf("/to", toIdx + "/to".length()) != -1) {
-            throw new ZenException("Please include only one /to in your event." + EVENT_FORMAT);
-        }
+        validateEventDelimiters(userInput, fromIdx, toIdx);
 
         String description = userInput.substring(0, fromIdx).trim();
-        String start = userInput.substring(fromIdx + "/from".length(), toIdx).trim();
-        String end = userInput.substring(toIdx + "/to".length()).trim();
+        String start = userInput.substring(fromIdx + EVENT_FROM_DELIMITER.length(), toIdx).trim();
+        String end = userInput.substring(toIdx + EVENT_TO_DELIMITER.length()).trim();
 
+        validateEventParts(description, start, end);
+        return createEvent(description, start, end);
+    }
+
+    /**
+     * Validates that an event command contains one correctly ordered pair of delimiters.
+     *
+     * @param userInput raw event command arguments
+     * @param fromIdx position of the {@code /from} delimiter
+     * @param toIdx position of the {@code /to} delimiter
+     * @throws ZenException if either delimiter is missing, duplicated, or out of order
+     */
+    private static void validateEventDelimiters(String userInput, int fromIdx, int toIdx) throws ZenException {
+        if (fromIdx == -1) {
+            throw new ZenException("Please include " + EVENT_FROM_DELIMITER
+                    + " in your event to separate the description from the timings." + EVENT_FORMAT);
+        }
+        if (toIdx == -1) {
+            throw new ZenException("Please include " + EVENT_TO_DELIMITER + " in your event." + EVENT_FORMAT);
+        }
+        if (fromIdx > toIdx) {
+            throw new ZenException(EVENT_FROM_DELIMITER + " must come before " + EVENT_TO_DELIMITER + "."
+                    + EVENT_FORMAT);
+        }
+
+        if (userInput.indexOf(EVENT_FROM_DELIMITER, fromIdx + EVENT_FROM_DELIMITER.length()) != -1) {
+            throw new ZenException("Please include only one " + EVENT_FROM_DELIMITER + " in your event."
+                    + EVENT_FORMAT);
+        }
+        if (userInput.indexOf(EVENT_TO_DELIMITER, toIdx + EVENT_TO_DELIMITER.length()) != -1) {
+            throw new ZenException("Please include only one " + EVENT_TO_DELIMITER + " in your event."
+                    + EVENT_FORMAT);
+        }
+    }
+
+    /**
+     * Validates the description and timing text extracted from an event command.
+     *
+     * @param description event description
+     * @param start event start date and time text
+     * @param end event end date and time text
+     * @throws ZenException if a required event value is empty
+     */
+    private static void validateEventParts(String description, String start, String end) throws ZenException {
         if (description.isEmpty()) {
             throw new ZenException("The event description cannot be empty. Please try again." + EVENT_FORMAT);
         }
@@ -184,7 +214,18 @@ public class Parser {
         if (end.isEmpty()) {
             throw new ZenException("The event end time cannot be empty. Please try again." + EVENT_FORMAT);
         }
+    }
 
+    /**
+     * Parses validated event values and creates the corresponding event.
+     *
+     * @param description event description
+     * @param start event start date and time text
+     * @param end event end date and time text
+     * @return an event with the supplied description and timing
+     * @throws ZenException if a time is malformed or the event ends before it starts
+     */
+    private static Event createEvent(String description, String start, String end) throws ZenException {
         try {
             LocalDateTime startDateTime = LocalDateTime.parse(start, DATE_TIME_FORMATTER);
             LocalDateTime endDateTime = LocalDateTime.parse(end, DATE_TIME_FORMATTER);
