@@ -193,6 +193,8 @@ public class Parser {
                 throw new ZenException("The start date and time is after the end date and time." + EVENT_FORMAT);
             }
 
+            assert !startDateTime.isAfter(endDateTime) : "An event's start must not be after its end";
+
             return new Event(description, startDateTime, endDateTime);
         } catch (DateTimeParseException e) {
             throw new ZenException("The start and end date and time must follow the required format."
