@@ -33,13 +33,7 @@ public class TaskList {
      * @throws ZenException if no task has the supplied number.
      */
     public Task deleteTask(int taskNum) throws ZenException {
-        if (!isValidTaskNumber(taskNum)) {
-            if (this.isEmpty()) {
-                throw new ZenException("The task list is empty. Add a task first.");
-            } else {
-                throw new ZenException("Maximum task number is " + this.size() + ".");
-            }
-        }
+        validateTaskNumber(taskNum);
         return this.tasks.remove(taskNum - 1);
     }
 
@@ -54,6 +48,23 @@ public class TaskList {
     }
 
     /**
+     * Validates whether the task number entered by the user is valid.
+     * @param taskNum task number to check
+     * @throws ZenException if task number is invalid or task list is empty
+     */
+    private void validateTaskNumber(int taskNum) throws ZenException {
+        if (this.isEmpty()) {
+            throw new ZenException("The task list is empty. Add a task first.");
+        }
+
+        if (isValidTaskNumber(taskNum)) {
+            return;
+        }
+
+        throw new ZenException("Task number should be from 1 and " + this.size() + " inclusive.");
+    }
+
+    /**
      * Marks a task identified by its one-based task number as complete.
      *
      * @param taskNum the one-based task number.
@@ -61,13 +72,7 @@ public class TaskList {
      * @throws ZenException if no task has the supplied number.
      */
     public Task markTask(int taskNum) throws ZenException {
-        if (!isValidTaskNumber(taskNum)) {
-            if (this.isEmpty()) {
-                throw new ZenException("The task list is empty. Add a task first.");
-            } else {
-                throw new ZenException("Maximum task number is " + this.size() + ".");
-            }
-        }
+        validateTaskNumber(taskNum);
         assert isValidTaskNumber(taskNum) : "Validated task number must be in range";
         Task task = this.tasks.get(taskNum - 1);
         task.markAsDone();
@@ -82,13 +87,7 @@ public class TaskList {
      * @throws ZenException if no task has the supplied number.
      */
     public Task unmarkTask(int taskNum) throws ZenException {
-        if (!isValidTaskNumber(taskNum)) {
-            if (this.isEmpty()) {
-                throw new ZenException("The task list is empty. Add a task first.");
-            } else {
-                throw new ZenException("Maximum task number is " + this.size() + ".");
-            }
-        }
+        validateTaskNumber(taskNum);
         assert isValidTaskNumber(taskNum) : "Validated task number must be in range";
         Task task = this.tasks.get(taskNum - 1);
         task.markAsNotDone();
