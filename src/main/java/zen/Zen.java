@@ -11,9 +11,15 @@ public class Zen {
 
     private static final String NAME = "Zen";
     private static final String GREETING = """
+                 _____            \s
+                |__  / __     _ _    \s
+                  / / / _ \\  | '_ \\ \s
+                 / / |  __/  | | | |  \s
+                /___\\\\___| |_| |_|\
+               \s
                 Hello! I'm %s.
                 What can I do for you?
-                """.formatted(NAME).strip();
+               """.formatted(NAME).strip();
 
     private final Storage storage;
     private TaskList taskList;
