@@ -21,6 +21,7 @@ public class TaskList {
      * @param task the task to add.
      */
     public void addTask(Task task) {
+        assert task != null : "A task list must not contain null tasks.";
         this.tasks.add(task);
     }
 
@@ -67,6 +68,7 @@ public class TaskList {
                 throw new ZenException("Maximum task number is " + this.size() + ".");
             }
         }
+        assert isValidTaskNumber(taskNum) : "Validated task number must be in range";
         Task task = this.tasks.get(taskNum - 1);
         task.markAsDone();
         return task;
@@ -87,6 +89,7 @@ public class TaskList {
                 throw new ZenException("Maximum task number is " + this.size() + ".");
             }
         }
+        assert isValidTaskNumber(taskNum) : "Validated task number must be in range";
         Task task = this.tasks.get(taskNum - 1);
         task.markAsNotDone();
         return task;
