@@ -3,6 +3,7 @@ package zen.task;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import zen.ZenException;
 
@@ -148,16 +149,9 @@ public class TaskList {
      * @return pipe-delimited task records, one per line
      */
     public String toStorageString() {
-        StringBuilder output = new StringBuilder();
-
-        for (int i = 0; i < this.tasks.size(); i++) {
-            output.append(this.tasks.get(i).toStorageString());
-            if (i < this.tasks.size() - 1) {
-                output.append("\n");
-            }
-        }
-
-        return output.toString();
+        return tasks.stream()
+                .map(Task::toStorageString)
+                .collect(Collectors.joining("\n"));
     }
 
     @Override
