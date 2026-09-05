@@ -73,3 +73,12 @@ run {
 checkstyle {
     toolVersion = '11.0.0'
 }
+
+tasks.named('run') {
+    // Assertions are off by default for `run`, matching the JVM's normal behavior.
+    // Pass -PenableAssertions on the command line (e.g. `./gradlew run -PenableAssertions`)
+    // to opt in and catch invariant violations locally, same as what JUnit does by default.
+    if (project.hasProperty('enableAssertions')) {
+        jvmArgs '-ea'
+    }
+}
