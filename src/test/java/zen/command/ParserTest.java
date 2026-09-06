@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import zen.ZenException;
 import zen.task.Deadline;
 import zen.task.Event;
+import zen.task.Priority;
+import zen.task.Todo;
 
 /**
  * Tests parsing and validation of user command input.
@@ -19,6 +21,7 @@ public class ParserTest {
     private static final String DEADLINE_FORMAT = "\nDeadline format: deadline <description> /by yyyy-MM-dd HH:mm:ss";
     private static final String EVENT_FORMAT = "\nEvent format: event <description> /from "
             + "yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss";
+    private static final String PRIORITY_FORMAT = "Invalid priority. Priority format: /priority <high|medium|low>";
 
     // AI-assisted
     @Test
@@ -97,10 +100,41 @@ public class ParserTest {
 
     // AI-assisted
     @Test
+    public void parseTodo_priorityValueIgnoresCase_returnsNormalizedPriority() throws ZenException {
+        Todo todo = Parser.parseTodo("buy milk /priority HIGH");
+
+        assertEquals(Priority.HIGH, todo.getPriority());
+        assertEquals("T | 0 | buy milk | high", todo.toStorageString());
+    }
+
+    // AI-assisted
+    @Test
+    public void parseTodo_missingUnknownOrDuplicatePriority_throwsHelpfulException() {
+        String[] invalidInputs = {
+            "buy milk /priority",
+            "buy milk /priority urgent",
+            "buy milk /priority low /priority high"
+        };
+        for (String input : invalidInputs) {
+            ZenException exception = assertThrows(ZenException.class, () -> Parser.parseTodo(input));
+            assertEquals(PRIORITY_FORMAT, exception.getMessage());
+        }
+    }
+
+    // AI-assisted
+    @Test
     public void parseDeadline_validInputWithWhitespace_returnsDeadline() throws ZenException {
         Deadline deadline = Parser.parseDeadline("  submit assignment  /by  2026-10-10 10:30:00  ");
 
-        assertEquals("D | 0 | submit assignment | 2026-10-10T10:30", deadline.toStorageString());
+        assertEquals("D | 0 | submit assignment | 2026-10-10T10:30 | none", deadline.toStorageString());
+    }
+
+    // AI-assisted
+    @Test
+    public void parseDeadline_terminalPriority_returnsPrioritizedDeadline() throws ZenException {
+        Deadline deadline = Parser.parseDeadline("submit assignment /by 2026-10-10 10:30:00 /priority medium");
+
+        assertEquals("D | 0 | submit assignment | 2026-10-10T10:30 | medium", deadline.toStorageString());
     }
 
     // AI-assisted
@@ -153,7 +187,15 @@ public class ParserTest {
     public void parseEvent_validInputWithEqualStartAndEnd_returnsEvent() throws ZenException {
         Event event = Parser.parseEvent("  meeting  /from 2026-10-10 10:30:00 /to 2026-10-10 10:30:00  ");
 
-        assertEquals("E | 0 | meeting | 2026-10-10T10:30 to 2026-10-10T10:30", event.toStorageString());
+        assertEquals("E | 0 | meeting | 2026-10-10T10:30 to 2026-10-10T10:30 | none", event.toStorageString());
+    }
+
+    @Test
+    public void parseEvent_terminalPriority_returnsPrioritizedEvent() throws ZenException {
+        Event event = Parser.parseEvent("meeting /from 2026-10-10 10:30:00 /to 2026-10-10 11:30:00 /priority low");
+
+        assertEquals("E | 0 | meeting | 2026-10-10T10:30 to 2026-10-10T11:30 | low",
+                event.toStorageString());
     }
 
     // AI-assisted

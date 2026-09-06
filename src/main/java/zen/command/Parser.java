@@ -4,10 +4,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import zen.ZenException;
 import zen.task.Deadline;
 import zen.task.Event;
+import zen.task.Priority;
+import zen.task.Todo;
 
 /** Converts user input into commands and validates command arguments. */
 public class Parser {
@@ -15,10 +19,13 @@ public class Parser {
     private static final String DATE_TIME_FORMAT = DATE_FORMAT + " HH:mm:ss";
     private static final String EVENT_FROM_DELIMITER = "/from";
     private static final String EVENT_TO_DELIMITER = "/to";
+    private static final String PRIORITY_FORMAT = "Invalid priority. Priority format: /priority <high|medium|low>";
     private static final String DEADLINE_FORMAT = "\nDeadline format: deadline <description> /by " + DATE_TIME_FORMAT;
     private static final String EVENT_FORMAT = String.format("\nEvent format: event <description> %s %s %s %s",
             EVENT_FROM_DELIMITER, DATE_TIME_FORMAT, EVENT_TO_DELIMITER, DATE_TIME_FORMAT);
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+    private static final Pattern PRIORITY_TOKEN_PATTERN = Pattern.compile("(?<!\\S)/priority(?!\\S)");
+    private static final Pattern TERMINAL_PRIORITY_PATTERN = Pattern.compile("(?s)^(.*)\\s+/priority\\s+(\\S+)\\s*$");
 
     /**
      * Converts one line of user input into the command that will handle it.
@@ -94,6 +101,21 @@ public class Parser {
     }
 
     /**
+     * Parses a todo description and its optional terminal priority clause.
+     *
+     * @param userInput the todo command arguments
+     * @return a todo with the parsed description and priority
+     * @throws ZenException if the description or priority clause is invalid
+     */
+    public static Todo parseTodo(String userInput) throws ZenException {
+        PriorityArguments priorityArguments = extractPriorityArguments(userInput);
+        if (priorityArguments.details().isEmpty()) {
+            throw new ZenException("The to-do description cannot be empty. Please try again.");
+        }
+        return new Todo(priorityArguments.details(), priorityArguments.priority());
+    }
+
+    /**
      * Parses a {@link Deadline} task from raw user input of the form
      * {@code <description> /by <due by>}.
      *
@@ -104,6 +126,8 @@ public class Parser {
      *                       or if the description or due-by value is empty.
      */
     public static Deadline parseDeadline(String userInput) throws ZenException {
+        PriorityArguments priorityArguments = extractPriorityArguments(userInput);
+        userInput = priorityArguments.details();
         int byIdx = userInput.indexOf("/by");
 
         if (byIdx == -1) {
@@ -133,7 +157,7 @@ public class Parser {
 
         try {
             LocalDateTime dateTime = LocalDateTime.parse(dueBy, DATE_TIME_FORMATTER);
-            return new Deadline(description, dateTime);
+            return new Deadline(description, dateTime, priorityArguments.priority());
         } catch (DateTimeParseException e) {
             throw new ZenException("The due date and time must follow the required format."
                     + DEADLINE_FORMAT);
@@ -152,6 +176,8 @@ public class Parser {
      *                       description, start, or end value is empty.
      */
     public static Event parseEvent(String userInput) throws ZenException {
+        PriorityArguments priorityArguments = extractPriorityArguments(userInput);
+        userInput = priorityArguments.details();
         int fromIdx = userInput.indexOf(EVENT_FROM_DELIMITER);
         int toIdx = userInput.indexOf(EVENT_TO_DELIMITER);
 
@@ -162,7 +188,7 @@ public class Parser {
         String end = userInput.substring(toIdx + EVENT_TO_DELIMITER.length()).trim();
 
         validateEventParts(description, start, end);
-        return createEvent(description, start, end);
+        return createEvent(description, start, end, priorityArguments.priority());
     }
 
     /**
@@ -225,7 +251,8 @@ public class Parser {
      * @return an event with the supplied description and timing
      * @throws ZenException if a time is malformed or the event ends before it starts
      */
-    private static Event createEvent(String description, String start, String end) throws ZenException {
+    private static Event createEvent(String description, String start, String end, Priority priority)
+            throws ZenException {
         try {
             LocalDateTime startDateTime = LocalDateTime.parse(start, DATE_TIME_FORMATTER);
             LocalDateTime endDateTime = LocalDateTime.parse(end, DATE_TIME_FORMATTER);
@@ -236,10 +263,44 @@ public class Parser {
 
             assert !startDateTime.isAfter(endDateTime) : "An event's start must not be after its end";
 
-            return new Event(description, startDateTime, endDateTime);
+            return new Event(description, startDateTime, endDateTime, priority);
         } catch (DateTimeParseException e) {
             throw new ZenException("The start and end date and time must follow the required format."
                     + EVENT_FORMAT);
         }
+    }
+
+    /**
+     * Separates an optional terminal priority clause from task command arguments.
+     *
+     * @param userInput raw task command arguments
+     * @return the details without the priority clause and the selected priority
+     * @throws ZenException if a priority clause is missing a value, is not terminal, is duplicated,
+     *                      or uses an unsupported value
+     */
+    private static PriorityArguments extractPriorityArguments(String userInput) throws ZenException {
+        Matcher terminalPriorityMatcher = TERMINAL_PRIORITY_PATTERN.matcher(userInput);
+        if (!terminalPriorityMatcher.matches()) {
+            if (PRIORITY_TOKEN_PATTERN.matcher(userInput).find()) {
+                throw new ZenException(PRIORITY_FORMAT);
+            }
+            return new PriorityArguments(userInput.trim(), Priority.NONE);
+        }
+
+        String taskDetails = terminalPriorityMatcher.group(1).trim();
+        if (PRIORITY_TOKEN_PATTERN.matcher(taskDetails).find()) {
+            throw new ZenException(PRIORITY_FORMAT);
+        }
+
+        try {
+            Priority priority = Priority.fromCommandValue(terminalPriorityMatcher.group(2));
+            return new PriorityArguments(taskDetails, priority);
+        } catch (IllegalArgumentException exception) {
+            throw new ZenException(PRIORITY_FORMAT);
+        }
+    }
+
+    /** Stores task details separated from an optional priority clause. */
+    private record PriorityArguments(String details, Priority priority) {
     }
 }

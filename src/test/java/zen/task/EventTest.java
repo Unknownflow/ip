@@ -20,7 +20,7 @@ public class EventTest {
     @Test
     public void toStorageString_isNotDone_formatsCorrectly() {
         Event event = new Event(DESCRIPTION, START_DATE_TIME, END_DATE_TIME);
-        String expectedOutput = String.format("E | %d | %s | %s to %s", 0, DESCRIPTION,
+        String expectedOutput = String.format("E | %d | %s | %s to %s | none", 0, DESCRIPTION,
                 START_DATE_TIME, END_DATE_TIME);
         assertEquals(expectedOutput, event.toStorageString());
     }
@@ -29,7 +29,7 @@ public class EventTest {
     public void toStorageString_isDone_formatsCorrectly() {
         Event event = new Event(DESCRIPTION, START_DATE_TIME, END_DATE_TIME);
         event.markAsDone();
-        String expectedOutput = String.format("E | %d | %s | %s to %s", 1, DESCRIPTION,
+        String expectedOutput = String.format("E | %d | %s | %s to %s | none", 1, DESCRIPTION,
                 START_DATE_TIME, END_DATE_TIME);
         assertEquals(expectedOutput, event.toStorageString());
     }

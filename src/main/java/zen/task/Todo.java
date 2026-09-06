@@ -13,9 +13,19 @@ public class Todo extends Task {
         super(description);
     }
 
+    /**
+     * Creates an incomplete todo task with a priority.
+     *
+     * @param description the todo description
+     * @param priority the todo priority
+     */
+    public Todo(String description, Priority priority) {
+        super(description, priority);
+    }
+
     @Override
     public String toString() {
-        return String.format("[T]%s", super.toString());
+        return formatWithPriority(String.format("[T][%s] %s", getStatusIcon(), description));
     }
 
     /**
@@ -25,7 +35,8 @@ public class Todo extends Task {
      */
     @Override
     public String toStorageString() {
-        return String.format("T | %d | %s", this.isDone ? 1 : 0, this.description);
+        return String.format("T | %d | %s | %s", this.isDone ? 1 : 0, this.description,
+                priority.getDisplayValue());
     }
 
     /**
