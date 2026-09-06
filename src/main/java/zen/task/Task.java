@@ -6,6 +6,7 @@ import java.time.LocalDate;
 public abstract class Task {
     protected String description;
     protected boolean isDone;
+    protected final Priority priority;
 
     /**
      * Creates an incomplete task with the supplied description.
@@ -13,8 +14,19 @@ public abstract class Task {
      * @param description the task description.
      */
     public Task(String description) {
+        this(description, Priority.NONE);
+    }
+
+    /**
+     * Creates an incomplete task with the supplied description and priority.
+     *
+     * @param description the task description
+     * @param priority the task priority
+     */
+    public Task(String description, Priority priority) {
         this.description = description;
         this.isDone = false;
+        this.priority = priority;
     }
 
     /** Returns the icon representing this task's completion status. */
@@ -42,6 +54,11 @@ public abstract class Task {
         return description.contains(keyword);
     }
 
+    /** Returns this task's priority. */
+    public Priority getPriority() {
+        return priority;
+    }
+
     /** Returns this task in the format used for persistent storage. */
     public abstract String toStorageString();
 
@@ -55,6 +72,11 @@ public abstract class Task {
 
     @Override
     public String toString() {
-        return String.format("[%s] %s", this.getStatusIcon(), this.description);
+        return formatWithPriority(String.format("[%s] %s", this.getStatusIcon(), this.description));
+    }
+
+    /** Adds this task's priority to a formatted task description. */
+    protected String formatWithPriority(String taskDetails) {
+        return String.format("%s (priority: %s)", taskDetails, priority.getDisplayValue());
     }
 }

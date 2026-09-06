@@ -18,7 +18,7 @@ public class DeadlineTest {
     @Test
     public void toStorageString_isNotDone_formatsCorrectly() {
         Deadline deadline = new Deadline(DESCRIPTION, DATE_TIME);
-        String expectedOutput = String.format("D | %d | %s | %s", 0, DESCRIPTION, DATE_TIME);
+        String expectedOutput = String.format("D | %d | %s | %s | none", 0, DESCRIPTION, DATE_TIME);
         assertEquals(expectedOutput, deadline.toStorageString());
     }
 
@@ -26,7 +26,7 @@ public class DeadlineTest {
     public void toStorageString_isDone_formatsCorrectly() {
         Deadline deadline = new Deadline(DESCRIPTION, DATE_TIME);
         deadline.markAsDone();
-        String expectedOutput = String.format("D | %d | %s | %s", 1, DESCRIPTION, DATE_TIME);
+        String expectedOutput = String.format("D | %d | %s | %s | none", 1, DESCRIPTION, DATE_TIME);
         assertEquals(expectedOutput, deadline.toStorageString());
     }
 

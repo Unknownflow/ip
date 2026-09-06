@@ -9,6 +9,7 @@ import java.util.List;
 import zen.ZenException;
 import zen.task.Deadline;
 import zen.task.Event;
+import zen.task.Priority;
 import zen.task.Task;
 import zen.task.TaskList;
 import zen.task.Todo;
@@ -87,11 +88,11 @@ public class Storage {
      * @return the reconstructed task, including its completion status
      */
     private Task parseTask(String taskRecord) {
-        String[] fields = taskRecord.split("\\s*\\|\\s*");
+        String[] fields = taskRecord.split("\\s*\\|\\s*", -1);
         Task task = switch (fields[0]) {
-            case "T" -> new Todo(fields[2]);
-            case "D" -> new Deadline(fields[2], LocalDateTime.parse(fields[3]));
-            case "E" -> createEvent(fields[2], fields[3]);
+            case "T" -> new Todo(fields[2], getPriority(fields, 3));
+            case "D" -> new Deadline(fields[2], LocalDateTime.parse(fields[3]), getPriority(fields, 4));
+            case "E" -> createEvent(fields[2], fields[3], getPriority(fields, 4));
             default -> throw new IllegalArgumentException("Unknown task type: " + fields[0]);
         };
 
@@ -108,8 +109,25 @@ public class Storage {
      * @param timing saved start and end timing text
      * @return the reconstructed event
      */
-    private Event createEvent(String description, String timing) {
+    private Event createEvent(String description, String timing, Priority priority) {
         String[] times = timing.split(" to ", 2);
-        return new Event(description, LocalDateTime.parse(times[0]), LocalDateTime.parse(times[1]));
+        return new Event(description, LocalDateTime.parse(times[0]), LocalDateTime.parse(times[1]), priority);
+    }
+
+    /**
+     * Returns a record's priority, using none for a legacy record without that field.
+     *
+     * @param fields fields read from a task record
+     * @param legacyFieldCount number of fields in the legacy record format
+     * @return the parsed priority
+     */
+    private Priority getPriority(String[] fields, int legacyFieldCount) {
+        if (fields.length == legacyFieldCount) {
+            return Priority.NONE;
+        }
+        if (fields.length == legacyFieldCount + 1) {
+            return Priority.fromStorageValue(fields[fields.length - 1]);
+        }
+        throw new IllegalArgumentException("Incorrect number of task fields");
     }
 }

@@ -3,7 +3,6 @@ package zen.command;
 import zen.ZenException;
 import zen.storage.Storage;
 import zen.task.TaskList;
-import zen.task.Todo;
 import zen.ui.Ui;
 
 /** Adds a todo task. */
@@ -22,9 +21,6 @@ public class TodoCommand extends AddCommand {
     /** Validates the description and adds the requested todo. */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws ZenException {
-        if (description.isEmpty()) {
-            throw new ZenException("The to-do description cannot be empty. Please try again.");
-        }
-        addTask(new Todo(description), tasks, ui, storage);
+        addTask(Parser.parseTodo(description), tasks, ui, storage);
     }
 }

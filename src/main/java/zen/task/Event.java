@@ -24,14 +24,28 @@ public class Event extends Task {
     }
 
     /**
+     * Creates an incomplete event task with a priority.
+     *
+     * @param description the event description
+     * @param start the event start date and time
+     * @param end the event end date and time
+     * @param priority the event priority
+     */
+    public Event(String description, LocalDateTime start, LocalDateTime end, Priority priority) {
+        super(description, priority);
+        this.start = start;
+        this.end = end;
+    }
+
+    /**
      * Returns this event in the file format used for persistence.
      *
      * @return a pipe-delimited event record
      */
     @Override
     public String toStorageString() {
-        return String.format("E | %d | %s | %s to %s", this.isDone ? 1 : 0,
-                this.description, this.start.toString(), this.end.toString());
+        return String.format("E | %d | %s | %s to %s | %s", this.isDone ? 1 : 0,
+                this.description, this.start, this.end, priority.getDisplayValue());
     }
 
     /**
@@ -51,7 +65,7 @@ public class Event extends Task {
 
     @Override
     public String toString() {
-        return String.format("[E]%s (from: %s to: %s)", super.toString(),
-                this.start.format(FORMATTER), this.end.format(FORMATTER));
+        return formatWithPriority(String.format("[E][%s] %s (from: %s to: %s)", getStatusIcon(), description,
+                this.start.format(FORMATTER), this.end.format(FORMATTER)));
     }
 }

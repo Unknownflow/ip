@@ -21,13 +21,26 @@ public class Deadline extends Task {
     }
 
     /**
+     * Creates an incomplete deadline task with a priority.
+     *
+     * @param description the deadline description
+     * @param dueBy the due date and time
+     * @param priority the deadline priority
+     */
+    public Deadline(String description, LocalDateTime dueBy, Priority priority) {
+        super(description, priority);
+        this.dueBy = dueBy;
+    }
+
+    /**
      * Returns this deadline in the file format used for persistence.
      *
      * @return a pipe-delimited deadline record
      */
     @Override
     public String toStorageString() {
-        return String.format("D | %d | %s | %s", this.isDone ? 1 : 0, this.description, this.dueBy.toString());
+        return String.format("D | %d | %s | %s | %s", this.isDone ? 1 : 0, this.description,
+                this.dueBy, priority.getDisplayValue());
     }
 
     /**
@@ -44,6 +57,7 @@ public class Deadline extends Task {
 
     @Override
     public String toString() {
-        return String.format("[D]%s (by: %s)", super.toString(), this.dueBy.format(FORMATTER));
+        return formatWithPriority(String.format("[D][%s] %s (by: %s)", getStatusIcon(), description,
+                this.dueBy.format(FORMATTER)));
     }
 }

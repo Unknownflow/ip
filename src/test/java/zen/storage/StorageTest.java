@@ -14,6 +14,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import zen.ZenException;
 import zen.task.Deadline;
+import zen.task.Priority;
 import zen.task.TaskList;
 import zen.task.Todo;
 /**
@@ -28,13 +29,14 @@ public class StorageTest {
     public void save_newNestedPath_createsFileAndWritesTaskRecords() throws ZenException, IOException {
         Path filePath = temporaryDirectory.resolve("data/tasks.txt");
         TaskList taskList = new TaskList();
-        taskList.addTask(new Todo("buy milk"));
-        taskList.addTask(new Deadline("submit report", LocalDateTime.of(2026, 10, 10, 10, 30)));
+        taskList.addTask(new Todo("buy milk", Priority.HIGH));
+        taskList.addTask(new Deadline("submit report", LocalDateTime.of(2026, 10, 10, 10, 30), Priority.LOW));
 
         new Storage(filePath.toString()).save(taskList);
 
         assertTrue(Files.exists(filePath));
-        assertEquals("T | 0 | buy milk\nD | 0 | submit report | 2026-10-10T10:30", Files.readString(filePath));
+        assertEquals("T | 0 | buy milk | high\nD | 0 | submit report | 2026-10-10T10:30 | low",
+                Files.readString(filePath));
     }
 
     // AI-assisted
@@ -50,7 +52,7 @@ public class StorageTest {
         storage.save(firstList);
         storage.save(replacementList);
 
-        assertEquals("T | 0 | new task", Files.readString(filePath));
+        assertEquals("T | 0 | new task | none", Files.readString(filePath));
     }
 
     // AI-assisted
@@ -67,18 +69,21 @@ public class StorageTest {
 
     // AI-assisted
     @Test
-    public void load_savedTaskTypesAndStatuses_restoresAllTaskRecords() throws ZenException, IOException {
+    public void load_legacyAndPriorityTaskRecords_restoresAllTaskRecords() throws ZenException, IOException {
         Path filePath = temporaryDirectory.resolve("tasks.txt");
         String records = String.join("\n",
                 "T | 1 | read book",
-                "D | 0 | submit report | 2026-10-10T10:30",
-                "E | 1 | project meeting | 2026-10-10T09:00 to 2026-10-10T10:00");
+                "D | 0 | submit report | 2026-10-10T10:30 | high",
+                "E | 1 | project meeting | 2026-10-10T09:00 to 2026-10-10T10:00 | medium");
         Files.writeString(filePath, records + "\n\n");
 
         TaskList loadedTasks = new Storage(filePath.toString()).load();
 
         assertEquals(3, loadedTasks.size());
-        assertEquals(records, loadedTasks.toStorageString());
+        assertEquals(String.join("\n",
+                "D | 0 | submit report | 2026-10-10T10:30 | high",
+                "E | 1 | project meeting | 2026-10-10T09:00 to 2026-10-10T10:00 | medium",
+                "T | 1 | read book | none"), loadedTasks.toStorageString());
     }
 
     // AI-assisted
@@ -89,6 +94,16 @@ public class StorageTest {
 
         ZenException exception = assertThrows(ZenException.class, () ->
                 new Storage(filePath.toString()).load());
+
+        assertEquals("Unable to load tasks. A new task list is created instead.", exception.getMessage());
+    }
+
+    @Test
+    public void load_malformedPriority_throwsZenException() throws IOException {
+        Path filePath = temporaryDirectory.resolve("tasks.txt");
+        Files.writeString(filePath, "T | 0 | buy milk | urgent");
+
+        ZenException exception = assertThrows(ZenException.class, () -> new Storage(filePath.toString()).load());
 
         assertEquals("Unable to load tasks. A new task list is created instead.", exception.getMessage());
     }

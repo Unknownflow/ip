@@ -17,13 +17,20 @@ public class TaskList {
     }
 
     /**
-     * Adds a task to the end of this list.
+     * Adds a task in priority order, preserving insertion order for equal priorities.
      *
      * @param task the task to add.
      */
     public void addTask(Task task) {
         assert task != null : "A task list must not contain null tasks.";
-        this.tasks.add(task);
+        int insertionIndex = tasks.size();
+        for (int i = 0; i < tasks.size(); i++) {
+            if (task.getPriority().compareTo(tasks.get(i).getPriority()) < 0) {
+                insertionIndex = i;
+                break;
+            }
+        }
+        this.tasks.add(insertionIndex, task);
     }
 
     /**
