@@ -11,7 +11,7 @@ public class Zen {
 
     private static final String NAME = "Zen";
     private static final String GREETING = """
-               Hello! I'm %s.
+               Hello! I'm %s, your calm task companion.
                What can I do for you?
                """.formatted(NAME).strip();
 
