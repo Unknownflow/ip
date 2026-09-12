@@ -10,7 +10,7 @@
 - **First-run storage check:** Before release, manually run the application from a working directory that contains neither `data/` nor `data/task_list.txt`. Enter `todo first task`, then `bye`. Verify that the application continues normally and creates `data/task_list.txt` containing `T | 0 | first task | none`. This manual check is required because the automated runner deliberately pre-creates the storage file for every case.
 - **Comparison:** Expected output is exact after normalizing line endings and ignoring only the final line-ending produced by the process.
 - **Failure policy:** Stop immediately at the first failed case and report both expected and actual output.
-- **GUI smoke check:** Run `./gradlew run`, enter `todo buy milk`, then `list`, and verify that each command and its response appear as paired chat bubbles with compact circular profile pictures. Enter `bye` and verify that the farewell appears and the text field and Send button are disabled. Start again with malformed storage data and verify that the load error appears in a chatbot bubble.
+- **GUI smoke check:** Run `./gradlew run`, enter `todo buy milk`, then `list`, and verify that each command and its response appear as paired chat bubbles with compact circular profile pictures. Resize the window to its minimum width and then wider; enter `list` after adding several tasks and verify that long replies wrap within the viewport without a horizontal scrollbar. Enter `bye` and verify that the farewell appears and the text field and Send button are disabled. Start again with malformed storage data and verify that the load error appears in a chatbot bubble.
 
 ## Test cases
 
