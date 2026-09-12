@@ -18,5 +18,5 @@
 }
 
 #displayPicture {
-    -fx-effect: dropshadow(gaussian, rgba(54, 68, 56, 0.18), 8, 0.25, 1, 2);
+    -fx-effect: dropshadow(gaussian, rgba(54, 68, 56, 0.18), 4, 0.25, 0, 1);
 }
