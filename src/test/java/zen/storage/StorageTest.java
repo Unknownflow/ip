@@ -17,6 +17,7 @@ import zen.task.Deadline;
 import zen.task.Priority;
 import zen.task.TaskList;
 import zen.task.Todo;
+
 /**
  * Tests persistence of task lists through {@link Storage}.
  */
@@ -95,7 +96,8 @@ public class StorageTest {
         ZenException exception = assertThrows(ZenException.class, () ->
                 new Storage(filePath.toString()).load());
 
-        assertEquals("Unable to load tasks. A new task list is created instead.", exception.getMessage());
+        assertEquals("Unable to load tasks because line 1 is invalid. The file was not changed.",
+                exception.getMessage());
     }
 
     @Test
@@ -105,6 +107,33 @@ public class StorageTest {
 
         ZenException exception = assertThrows(ZenException.class, () -> new Storage(filePath.toString()).load());
 
-        assertEquals("Unable to load tasks. A new task list is created instead.", exception.getMessage());
+        assertEquals("Unable to load tasks because line 1 is invalid. The file was not changed.",
+                exception.getMessage());
+    }
+
+    @Test
+    public void load_invalidCompletionStatus_reportsItsLineAndPreservesFile() throws IOException {
+        Path filePath = temporaryDirectory.resolve("tasks.txt");
+        String records = String.join("\n", "T | 0 | first task | none", "", "T | 2 | buy milk | none");
+        Files.writeString(filePath, records);
+
+        ZenException exception = assertThrows(ZenException.class, () -> new Storage(filePath.toString()).load());
+
+        assertEquals("Unable to load tasks because line 3 is invalid. The file was not changed.",
+                exception.getMessage());
+        assertEquals(records, Files.readString(filePath));
+    }
+
+    @Test
+    public void load_multipleInvalidRecords_reportsAllInvalidLines() throws IOException {
+        Path filePath = temporaryDirectory.resolve("tasks.txt");
+        String records = String.join("\n", "T | 0 | valid task | none", "T | 2 | invalid status | none",
+                "D | 0 | valid deadline | 2026-10-10T10:30 | none", "X | 0 | invalid type");
+        Files.writeString(filePath, records);
+
+        ZenException exception = assertThrows(ZenException.class, () -> new Storage(filePath.toString()).load());
+
+        assertEquals("Unable to load tasks because lines 2, 4 are invalid. The file was not changed.",
+                exception.getMessage());
     }
 }

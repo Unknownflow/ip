@@ -19,6 +19,7 @@ public class Zen {
     private TaskList taskList;
     private final Ui ui;
     private final String initializationError;
+    private final boolean isStorageAvailable;
     private boolean isExit;
 
     /**
@@ -39,10 +40,16 @@ public class Zen {
             loadingError = e.getMessage();
         }
         initializationError = loadingError;
+        isStorageAvailable = loadingError.isEmpty();
+        isExit = !isStorageAvailable;
     }
 
     /** Runs the command-processing loop until the user exits. */
     public void run() {
+        if (!isStorageAvailable) {
+            return;
+        }
+
         ui.printGreeting(GREETING);
         while (!isExit) {
             try {

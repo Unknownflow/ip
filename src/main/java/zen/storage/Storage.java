@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import zen.ZenException;
 import zen.task.Deadline;
@@ -54,7 +56,7 @@ public class Storage {
      * Loads tasks from the pipe-delimited storage file.
      *
      * @return a task list containing every task stored in the file
-     * @throws ZenException if the storage directory or file is missing, or cannot be read
+     * @throws ZenException if the storage file cannot be read or contains an invalid record
      */
     public TaskList load() throws ZenException {
         if (!Files.exists(filePath)) {
@@ -66,19 +68,43 @@ public class Storage {
         try {
             TaskList taskList = new TaskList();
             List<String> taskRecords = Files.readAllLines(filePath);
+            List<Integer> invalidLineNumbers = new ArrayList<>();
 
-            for (String taskRecord : taskRecords) {
+            for (int i = 0; i < taskRecords.size(); i++) {
+                String taskRecord = taskRecords.get(i);
                 if (!taskRecord.isBlank()) {
-                    taskList.addTask(parseTask(taskRecord));
+                    try {
+                        taskList.addTask(parseTask(taskRecord));
+                    } catch (RuntimeException exception) {
+                        invalidLineNumbers.add(i + 1);
+                    }
                 }
+            }
+
+            if (!invalidLineNumbers.isEmpty()) {
+                throw invalidRecordException(invalidLineNumbers);
             }
 
             return taskList;
         } catch (IOException exception) {
             throw new ZenException("Unable to load tasks from " + filePath + ".");
-        } catch (Exception exception) {
-            throw new ZenException("Unable to load tasks. A new task list is created instead.");
         }
+    }
+
+    /**
+     * Creates an error explaining that a saved task record cannot be loaded.
+     *
+     * @param lineNumbers one-based line numbers of invalid records
+     * @return an exception explaining the invalid storage record
+     */
+    private ZenException invalidRecordException(List<Integer> lineNumbers) {
+        String formattedLineNumbers = lineNumbers.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
+        String lineLabel = lineNumbers.size() == 1 ? "line" : "lines";
+        String verb = lineNumbers.size() == 1 ? "is" : "are";
+        return new ZenException("Unable to load tasks because " + lineLabel + " " + formattedLineNumbers
+                + " " + verb + " invalid. The file was not changed.");
     }
 
     /**
@@ -90,16 +116,36 @@ public class Storage {
     private Task parseTask(String taskRecord) {
         String[] fields = taskRecord.split("\\s*\\|\\s*", -1);
         Task task = switch (fields[0]) {
-            case "T" -> new Todo(fields[2], getPriority(fields, 3));
-            case "D" -> new Deadline(fields[2], LocalDateTime.parse(fields[3]), getPriority(fields, 4));
-            case "E" -> createEvent(fields[2], fields[3], getPriority(fields, 4));
+            case "T" -> createTodo(fields);
+            case "D" -> createDeadline(fields);
+            case "E" -> createEvent(fields);
             default -> throw new IllegalArgumentException("Unknown task type: " + fields[0]);
         };
 
         if (fields[1].equals("1")) {
             task.markAsDone();
+        } else if (!fields[1].equals("0")) {
+            throw new IllegalArgumentException("Unknown completion status: " + fields[1]);
         }
         return task;
+    }
+
+    /** Creates a todo from a validated storage record. */
+    private Todo createTodo(String[] fields) {
+        validateFieldCount(fields, 3);
+        return new Todo(fields[2], getPriority(fields, 3));
+    }
+
+    /** Creates a deadline from a validated storage record. */
+    private Deadline createDeadline(String[] fields) {
+        validateFieldCount(fields, 4);
+        return new Deadline(fields[2], LocalDateTime.parse(fields[3]), getPriority(fields, 4));
+    }
+
+    /** Creates an event from a validated storage record. */
+    private Event createEvent(String[] fields) {
+        validateFieldCount(fields, 4);
+        return createEvent(fields[2], fields[3], getPriority(fields, 4));
     }
 
     /**
@@ -112,6 +158,13 @@ public class Storage {
     private Event createEvent(String description, String timing, Priority priority) {
         String[] times = timing.split(" to ", 2);
         return new Event(description, LocalDateTime.parse(times[0]), LocalDateTime.parse(times[1]), priority);
+    }
+
+    /** Validates that fields contain either the legacy or priority-aware record length. */
+    private void validateFieldCount(String[] fields, int legacyFieldCount) {
+        if (fields.length != legacyFieldCount && fields.length != legacyFieldCount + 1) {
+            throw new IllegalArgumentException("Incorrect number of task fields");
+        }
     }
 
     /**
