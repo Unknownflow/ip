@@ -3,6 +3,8 @@ package zen.gui;
 import java.io.IOException;
 import java.util.Collections;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.DoubleBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,12 +15,19 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.shape.Circle;
 
 /**
  * Represents a dialog box consisting of an ImageView to represent the speaker's face
  * and a label containing text from the speaker.
  */
 public class DialogBox extends HBox {
+    private static final double AVATAR_SIZE = 36;
+    private static final double AVATAR_RADIUS = AVATAR_SIZE / 2;
+    private static final double BUBBLE_MAX_WIDTH_RATIO = 0.85;
+    private static final double BUBBLE_HORIZONTAL_GUTTER = 24;
+    private static final double MINIMUM_BUBBLE_WIDTH = 160;
+
     @FXML
     private Label dialog;
     @FXML
@@ -36,6 +45,17 @@ public class DialogBox extends HBox {
 
         dialog.setText(text);
         displayPicture.setImage(img);
+        displayPicture.setClip(new Circle(AVATAR_RADIUS, AVATAR_RADIUS, AVATAR_RADIUS));
+        configureResponsiveBubbleWidth();
+    }
+
+    /** Configures the message bubble to wrap within the available dialog-row width. */
+    private void configureResponsiveBubbleWidth() {
+        DoubleBinding maximumBubbleWidth = (DoubleBinding) Bindings.min(
+                widthProperty().multiply(BUBBLE_MAX_WIDTH_RATIO),
+                widthProperty().subtract(displayPicture.fitWidthProperty()).subtract(BUBBLE_HORIZONTAL_GUTTER));
+        dialog.setMinWidth(0);
+        dialog.maxWidthProperty().bind(Bindings.max(MINIMUM_BUBBLE_WIDTH, maximumBubbleWidth));
     }
 
     /**
