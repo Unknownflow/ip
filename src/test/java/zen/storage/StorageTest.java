@@ -136,4 +136,65 @@ public class StorageTest {
         assertEquals("Unable to load tasks because lines 2, 4 are invalid. The file was not changed.",
                 exception.getMessage());
     }
+
+    // AI-assisted
+    @Test
+    public void load_recordsWithWrongFieldCounts_reportsAllInvalidLines() throws IOException {
+        Path filePath = temporaryDirectory.resolve("tasks.txt");
+        String records = String.join("\n", "T | 0", "D | 0 | report | 2026-10-10T10:30 | none | extra");
+        Files.writeString(filePath, records);
+
+        ZenException exception = assertThrows(ZenException.class, () -> new Storage(filePath.toString()).load());
+
+        assertEquals("Unable to load tasks because lines 1, 2 are invalid. The file was not changed.",
+                exception.getMessage());
+        assertEquals(records, Files.readString(filePath));
+    }
+
+    // AI-assisted
+    @Test
+    public void load_deadlineWithInvalidDateTime_reportsInvalidLine() throws IOException {
+        Path filePath = temporaryDirectory.resolve("tasks.txt");
+        Files.writeString(filePath, "D | 0 | report | not-a-date | none");
+
+        ZenException exception = assertThrows(ZenException.class, () -> new Storage(filePath.toString()).load());
+
+        assertEquals("Unable to load tasks because line 1 is invalid. The file was not changed.",
+                exception.getMessage());
+    }
+
+    // AI-assisted
+    @Test
+    public void load_eventWithMalformedTiming_reportsInvalidLine() throws IOException {
+        Path filePath = temporaryDirectory.resolve("tasks.txt");
+        Files.writeString(filePath, "E | 0 | meeting | 2026-10-10T09:00 until 2026-10-10T10:00 | none");
+
+        ZenException exception = assertThrows(ZenException.class, () -> new Storage(filePath.toString()).load());
+
+        assertEquals("Unable to load tasks because line 1 is invalid. The file was not changed.",
+                exception.getMessage());
+    }
+
+    // AI-assisted
+    @Test
+    public void load_pathThatIsDirectory_throwsZenException() throws IOException {
+        Path directoryPath = temporaryDirectory.resolve("task-directory");
+        Files.createDirectory(directoryPath);
+
+        ZenException exception = assertThrows(ZenException.class, () -> new Storage(directoryPath.toString()).load());
+
+        assertEquals("Unable to load tasks from " + directoryPath + ".", exception.getMessage());
+    }
+
+    // AI-assisted
+    @Test
+    public void save_pathThatIsDirectory_throwsZenException() throws IOException {
+        Path directoryPath = temporaryDirectory.resolve("task-directory");
+        Files.createDirectory(directoryPath);
+
+        ZenException exception = assertThrows(ZenException.class,
+                () -> new Storage(directoryPath.toString()).save(new TaskList()));
+
+        assertEquals("Unable to save tasks to " + directoryPath, exception.getMessage());
+    }
 }
