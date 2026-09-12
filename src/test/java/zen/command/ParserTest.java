@@ -21,7 +21,8 @@ public class ParserTest {
     private static final String DEADLINE_FORMAT = "\nDeadline format: deadline <description> /by yyyy-MM-dd HH:mm:ss";
     private static final String EVENT_FORMAT = "\nEvent format: event <description> /from "
             + "yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss";
-    private static final String PRIORITY_FORMAT = "Invalid priority. Priority format: /priority <high|medium|low>";
+    private static final String PRIORITY_FORMAT = "Please choose high, medium, or low for priority."
+            + "\nPriority format: /priority <high|medium|low>";
 
     // AI-assisted
     @Test

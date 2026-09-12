@@ -1,11 +1,14 @@
 package zen.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
+
+import zen.ZenException;
 
 /**
  * Tests task-list filtering behaviour.
@@ -52,5 +55,15 @@ public class TaskListTest {
 
         assertEquals("1.[T][ ] first high (priority: high)\n2.[T][ ] second high (priority: high)\n"
                 + "3.[T][ ] first low (priority: low)\n4.[T][ ] no priority (priority: none)", tasks.toString());
+    }
+
+    @Test
+    public void markTask_outOfRange_throwsHelpfulException() {
+        TaskList tasks = new TaskList();
+        tasks.addTask(new Todo("read book"));
+
+        ZenException exception = assertThrows(ZenException.class, () -> tasks.markTask(2));
+
+        assertEquals("Choose a task number from 1 to 1.", exception.getMessage());
     }
 }

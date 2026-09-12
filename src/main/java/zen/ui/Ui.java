@@ -137,7 +137,7 @@ public class Ui {
      */
     public void printMarkTaskDone(Task task) {
         String[] lines = {
-            "Nice! I've marked this task as done:",
+            "I've marked this task as done:",
             String.format("  %s", task)
         };
         echo(lines);
