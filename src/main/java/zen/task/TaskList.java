@@ -69,7 +69,7 @@ public class TaskList {
             return;
         }
 
-        throw new ZenException("Task number should be from 1 to " + this.size() + " inclusive.");
+        throw new ZenException("Choose a task number from 1 to " + this.size() + ".");
     }
 
     /**

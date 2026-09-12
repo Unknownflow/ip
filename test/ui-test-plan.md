@@ -10,7 +10,7 @@
 - **First-run storage check:** Before release, manually run the application from a working directory that contains neither `data/` nor `data/task_list.txt`. Enter `todo first task`, then `bye`. Verify that the application continues normally and creates `data/task_list.txt` containing `T | 0 | first task | none`. This manual check is required because the automated runner deliberately pre-creates the storage file for every case.
 - **Comparison:** Expected output is exact after normalizing line endings and ignoring only the final line-ending produced by the process.
 - **Failure policy:** Stop immediately at the first failed case and report both expected and actual output.
-- **GUI smoke check:** Run `./gradlew run`, enter `todo buy milk`, then `list`, and verify that each command and its response appear as paired chat bubbles with compact circular profile pictures. Resize the window to its minimum width and then wider; enter `list` after adding several tasks and verify that long replies wrap within the viewport without a horizontal scrollbar. Enter `bye` and verify that the farewell appears and the text field and Send button are disabled. Start again with malformed storage data and verify that the load error appears in a chatbot bubble.
+- **GUI smoke check:** Run `./gradlew run` and verify that the compact green top header has white text reading `Zen — your calm task companion` and remains directly above the conversation area. Verify that the command field shows the `Type a command...` hint before input. Enter `todo buy milk`, then `list`, and verify that each command and its response appear as paired chat bubbles with compact circular profile pictures. Resize the window to its minimum width and then wider; enter `list` after adding several tasks and verify that long replies wrap within the viewport without a horizontal scrollbar. Enter `bye` and verify that the farewell appears and the text field and Send button are disabled. Start again with malformed storage data and verify that the load error appears in a chatbot bubble.
 
 ## Test cases
 
@@ -31,7 +31,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -59,7 +59,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -93,7 +93,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -130,7 +130,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -165,7 +165,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -210,7 +210,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -255,7 +255,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -265,7 +265,7 @@ bye
      You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
-     Nice! I've marked this task as done:
+     I've marked this task as done:
        [T][X] submit form (priority: none)
     ____________________________________________________________
     ____________________________________________________________
@@ -306,7 +306,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -316,7 +316,7 @@ bye
      You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
-     Nice! I've marked this task as done:
+     I've marked this task as done:
        [T][X] keep this (priority: none)
     ____________________________________________________________
     ____________________________________________________________
@@ -351,7 +351,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -395,7 +395,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -436,7 +436,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -475,7 +475,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -524,7 +524,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -534,11 +534,11 @@ bye
      You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
-     Nice! I've marked this task as done:
+     I've marked this task as done:
        [T][X] repeat state (priority: none)
     ____________________________________________________________
     ____________________________________________________________
-     Nice! I've marked this task as done:
+     I've marked this task as done:
        [T][X] repeat state (priority: none)
     ____________________________________________________________
     ____________________________________________________________
@@ -579,7 +579,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -626,7 +626,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -667,7 +667,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -707,7 +707,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -745,7 +745,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -786,7 +786,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -824,7 +824,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -865,7 +865,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -903,7 +903,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -946,7 +946,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -961,7 +961,7 @@ bye
      You now have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
-     Nice! I've marked this task as done:
+     I've marked this task as done:
        [T][X] second task (priority: none)
     ____________________________________________________________
     ____________________________________________________________
@@ -994,7 +994,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -1038,7 +1038,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -1048,7 +1048,7 @@ bye
      You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
-     Nice! I've marked this task as done:
+     I've marked this task as done:
        [T][X] saved task (priority: none)
     ____________________________________________________________
     ____________________________________________________________
@@ -1093,7 +1093,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -1103,14 +1103,14 @@ bye
      You now have 1 task in the list.
     ____________________________________________________________
     ____________________________________________________________
-     Nice! I've marked this task as done:
+     I've marked this task as done:
        [T][X] stable task (priority: none)
     ____________________________________________________________
     ____________________________________________________________
-     Task number should be from 1 to 1 inclusive.
+     Choose a task number from 1 to 1.
     ____________________________________________________________
     ____________________________________________________________
-     Task number should be from 1 to 1 inclusive.
+     Choose a task number from 1 to 1.
     ____________________________________________________________
     ____________________________________________________________
      The task number must be a positive integer.
@@ -1157,7 +1157,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -1172,10 +1172,10 @@ bye
      You now have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
-     Task number should be from 1 to 2 inclusive.
+     Choose a task number from 1 to 2.
     ____________________________________________________________
     ____________________________________________________________
-     Task number should be from 1 to 2 inclusive.
+     Choose a task number from 1 to 2.
     ____________________________________________________________
     ____________________________________________________________
      The task number must be a positive integer.
@@ -1220,7 +1220,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -1269,7 +1269,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -1321,7 +1321,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -1359,7 +1359,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -1419,7 +1419,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -1471,7 +1471,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -1523,7 +1523,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -1565,7 +1565,7 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
@@ -1628,18 +1628,21 @@ bye
       / // _ \| '_ \   
      / /|  __/| | | |    
     /____\___||_| |_|
-    Hello! I'm Zen.
+    Hello! I'm Zen, your calm task companion.
     What can I do for you?
     ____________________________________________________________
 
     ____________________________________________________________
-     Invalid priority. Priority format: /priority <high|medium|low>
+     Please choose high, medium, or low for priority.
+     Priority format: /priority <high|medium|low>
     ____________________________________________________________
     ____________________________________________________________
-     Invalid priority. Priority format: /priority <high|medium|low>
+     Please choose high, medium, or low for priority.
+     Priority format: /priority <high|medium|low>
     ____________________________________________________________
     ____________________________________________________________
-     Invalid priority. Priority format: /priority <high|medium|low>
+     Please choose high, medium, or low for priority.
+     Priority format: /priority <high|medium|low>
     ____________________________________________________________
     ____________________________________________________________
      Got it. I've added this task:

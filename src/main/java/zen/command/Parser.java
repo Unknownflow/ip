@@ -19,7 +19,8 @@ public class Parser {
     private static final String DATE_TIME_FORMAT = DATE_FORMAT + " HH:mm:ss";
     private static final String EVENT_FROM_DELIMITER = "/from";
     private static final String EVENT_TO_DELIMITER = "/to";
-    private static final String PRIORITY_FORMAT = "Invalid priority. Priority format: /priority <high|medium|low>";
+    private static final String PRIORITY_FORMAT = "Please choose high, medium, or low for priority."
+            + "\nPriority format: /priority <high|medium|low>";
     private static final String DEADLINE_FORMAT = "\nDeadline format: deadline <description> /by " + DATE_TIME_FORMAT;
     private static final String EVENT_FORMAT = String.format("\nEvent format: event <description> %s %s %s %s",
             EVENT_FROM_DELIMITER, DATE_TIME_FORMAT, EVENT_TO_DELIMITER, DATE_TIME_FORMAT);
