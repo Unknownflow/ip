@@ -93,7 +93,7 @@ public class ParserTest {
     // AI-assisted
     @Test
     public void parseTaskNumber_nonDigitInput_throwsHelpfulException() {
-        for (String invalidInput : new String[] {"", "-1", "1.5", "one"}) {
+        for (String invalidInput : new String[] {"", "0", "-1", "1.5", "one", "999999999999999999999"}) {
             ZenException exception = assertThrows(ZenException.class, () -> Parser.parseTaskNumber(invalidInput));
             assertEquals("The task number must be a positive integer.", exception.getMessage());
         }
@@ -120,6 +120,13 @@ public class ParserTest {
             ZenException exception = assertThrows(ZenException.class, () -> Parser.parseTodo(input));
             assertEquals(PRIORITY_FORMAT, exception.getMessage());
         }
+    }
+
+    @Test
+    public void parseTodo_pipeInDescription_throwsHelpfulException() {
+        ZenException exception = assertThrows(ZenException.class, () -> Parser.parseTodo("buy | milk"));
+
+        assertEquals("Task descriptions cannot contain the | character.", exception.getMessage());
     }
 
     // AI-assisted
@@ -181,6 +188,23 @@ public class ParserTest {
 
         assertEquals("The due date and time must follow the required format." + DEADLINE_FORMAT,
                 exception.getMessage());
+    }
+
+    @Test
+    public void parseDeadline_impossibleDate_throwsHelpfulException() {
+        ZenException exception = assertThrows(ZenException.class, () ->
+                Parser.parseDeadline("submit /by 2026-02-30 10:30:00"));
+
+        assertEquals("The due date and time must follow the required format." + DEADLINE_FORMAT,
+                exception.getMessage());
+    }
+
+    @Test
+    public void parseDeadline_pipeInDescription_throwsHelpfulException() {
+        ZenException exception = assertThrows(ZenException.class, () ->
+                Parser.parseDeadline("submit | report /by 2026-10-10 10:30:00"));
+
+        assertEquals("Task descriptions cannot contain the | character.", exception.getMessage());
     }
 
     // AI-assisted
@@ -259,5 +283,17 @@ public class ParserTest {
                 invalidDateTime.getMessage());
         assertEquals("The start date and time is after the end date and time." + EVENT_FORMAT,
                 startAfterEnd.getMessage());
+    }
+
+    @Test
+    public void parseEvent_impossibleDateOrPipeInDescription_throwsHelpfulException() {
+        ZenException impossibleDate = assertThrows(ZenException.class, () ->
+                Parser.parseEvent("meeting /from 2026-02-30 10:30:00 /to 2026-03-01 11:30:00"));
+        ZenException pipeDescription = assertThrows(ZenException.class, () ->
+                Parser.parseEvent("meet | plan /from 2026-10-10 10:30:00 /to 2026-10-10 11:30:00"));
+
+        assertEquals("The start and end date and time must follow the required format." + EVENT_FORMAT,
+                impossibleDate.getMessage());
+        assertEquals("Task descriptions cannot contain the | character.", pipeDescription.getMessage());
     }
 }

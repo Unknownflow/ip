@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +25,9 @@ public class Parser {
     private static final String DEADLINE_FORMAT = "\nDeadline format: deadline <description> /by " + DATE_TIME_FORMAT;
     private static final String EVENT_FORMAT = String.format("\nEvent format: event <description> %s %s %s %s",
             EVENT_FROM_DELIMITER, DATE_TIME_FORMAT, EVENT_TO_DELIMITER, DATE_TIME_FORMAT);
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter
+            .ofPattern("uuuu-MM-dd HH:mm:ss")
+            .withResolverStyle(ResolverStyle.STRICT);
     private static final Pattern PRIORITY_TOKEN_PATTERN = Pattern.compile("(?<!\\S)/priority(?!\\S)");
     private static final Pattern TERMINAL_PRIORITY_PATTERN = Pattern.compile("(?s)^(.*)\\s+/priority\\s+(\\S+)\\s*$");
 
@@ -53,7 +56,7 @@ public class Parser {
             case "todo" -> new TodoCommand(arguments);
             case "deadline" -> new DeadlineCommand(arguments);
             case "event" -> new EventCommand(arguments);
-            case "bye" -> new ExitCommand();
+            case "bye" -> new ExitCommand(arguments);
             default -> new UnknownCommand();
         };
     }
@@ -68,6 +71,20 @@ public class Parser {
     public static void requireNoArguments(String args, String command) throws ZenException {
         if (!args.isEmpty()) {
             throw new ZenException("The " + command + " command does not take arguments.");
+        }
+    }
+
+    /**
+     * Validates that a command argument contains non-whitespace text.
+     *
+     * @param args the argument string to validate
+     * @param command the command name used in the error message
+     * @param argumentName the required argument name used in the error message
+     * @throws ZenException if {@code args} is blank
+     */
+    public static void requireNonBlankArgument(String args, String command, String argumentName) throws ZenException {
+        if (args.isBlank()) {
+            throw new ZenException("The " + command + " command requires a " + argumentName + ".");
         }
     }
 
@@ -98,7 +115,15 @@ public class Parser {
         if (!arguments.matches("\\d+")) {
             throw new ZenException("The task number must be a positive integer.");
         }
-        return Integer.parseInt(arguments);
+        try {
+            int taskNumber = Integer.parseInt(arguments);
+            if (taskNumber <= 0) {
+                throw new ZenException("The task number must be a positive integer.");
+            }
+            return taskNumber;
+        } catch (NumberFormatException exception) {
+            throw new ZenException("The task number must be a positive integer.");
+        }
     }
 
     /**
@@ -113,6 +138,7 @@ public class Parser {
         if (priorityArguments.details().isEmpty()) {
             throw new ZenException("The to-do description cannot be empty. Please try again.");
         }
+        validateTaskDescription(priorityArguments.details());
         return new Todo(priorityArguments.details(), priorityArguments.priority());
     }
 
@@ -142,6 +168,7 @@ public class Parser {
             throw new ZenException("The deadline description cannot be empty. Please try again."
                     + DEADLINE_FORMAT);
         }
+        validateTaskDescription(description);
 
         int nextByIdx = userInput.indexOf("/by", byIdx + "/by".length());
         if (nextByIdx != -1) {
@@ -189,6 +216,7 @@ public class Parser {
         String end = userInput.substring(toIdx + EVENT_TO_DELIMITER.length()).trim();
 
         validateEventParts(description, start, end);
+        validateTaskDescription(description);
         return createEvent(description, start, end, priorityArguments.priority());
     }
 
@@ -240,6 +268,18 @@ public class Parser {
         }
         if (end.isEmpty()) {
             throw new ZenException("The event end time cannot be empty. Please try again." + EVENT_FORMAT);
+        }
+    }
+
+    /**
+     * Validates that task text is compatible with the pipe-delimited storage format.
+     *
+     * @param description task description to validate
+     * @throws ZenException if the description contains the storage delimiter
+     */
+    private static void validateTaskDescription(String description) throws ZenException {
+        if (description.contains("|")) {
+            throw new ZenException("Task descriptions cannot contain the | character.");
         }
     }
 

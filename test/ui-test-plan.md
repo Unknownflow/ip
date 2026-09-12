@@ -1107,7 +1107,7 @@ bye
        [T][X] stable task (priority: none)
     ____________________________________________________________
     ____________________________________________________________
-     Choose a task number from 1 to 1.
+     The task number must be a positive integer.
     ____________________________________________________________
     ____________________________________________________________
      Choose a task number from 1 to 1.
@@ -1172,7 +1172,7 @@ bye
      You now have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
-     Choose a task number from 1 to 2.
+     The task number must be a positive integer.
     ____________________________________________________________
     ____________________________________________________________
      Choose a task number from 1 to 2.
@@ -1538,6 +1538,87 @@ bye
     ____________________________________________________________
     ____________________________________________________________
      Bye. See you again soon!
+    ____________________________________________________________
+
+```
+
+### UI-037 — Negative: strict validation rejects unsafe task input
+
+**Aim:** Verify that impossible dates, storage delimiters, oversized task numbers, missing find keywords, and bye arguments are rejected without changing a valid task.
+
+**Inputs:**
+```text
+deadline invalid date /by 2026-02-30 10:00:00
+todo unsafe | description
+todo retained
+mark 999999999999999999999
+find
+bye later
+list
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+     ______              
+    |__  /___  _ __      
+      / // _ \| '_ \   
+     / /|  __/| | | |    
+    /____\___||_| |_|
+    Hello! I'm Zen, your calm task companion.
+    What can I do for you?
+    ____________________________________________________________
+
+    ____________________________________________________________
+     The due date and time must follow the required format.
+     Deadline format: deadline <description> /by yyyy-MM-dd HH:mm:ss
+    ____________________________________________________________
+    ____________________________________________________________
+     Task descriptions cannot contain the | character.
+    ____________________________________________________________
+    ____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] retained (priority: none)
+     You now have 1 task in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     The task number must be a positive integer.
+    ____________________________________________________________
+    ____________________________________________________________
+     The find command requires a keyword.
+    ____________________________________________________________
+    ____________________________________________________________
+     The bye command does not take arguments.
+    ____________________________________________________________
+    ____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] retained (priority: none)
+    ____________________________________________________________
+    ____________________________________________________________
+     Bye. See you again soon!
+    ____________________________________________________________
+```
+
+### UI-038 — Negative: malformed storage cannot be overwritten
+
+**Aim:** Verify that malformed storage remains unchanged and ends the console session before commands are processed.
+
+**Storage data:**
+```text
+T | 2 | damaged | none
+```
+
+**Inputs:**
+```text
+todo replacement
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+    Error occurred: Unable to load tasks because line 1 is invalid. The file was not changed.
     ____________________________________________________________
 
 ```

@@ -48,6 +48,8 @@ public class MainWindow extends AnchorPane {
             dialogContainer.getChildren().add(
                     DialogBox.getZenDialog(zen.getInitializationError(), zenImage)
             );
+            userInput.setDisable(true);
+            sendButton.setDisable(true);
         }
     }
 
