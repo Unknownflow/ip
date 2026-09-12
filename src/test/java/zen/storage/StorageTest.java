@@ -192,8 +192,8 @@ public class StorageTest {
         Path directoryPath = temporaryDirectory.resolve("task-directory");
         Files.createDirectory(directoryPath);
 
-        ZenException exception = assertThrows(ZenException.class,
-                () -> new Storage(directoryPath.toString()).save(new TaskList()));
+        ZenException exception = assertThrows(ZenException.class, ()
+                -> new Storage(directoryPath.toString()).save(new TaskList()));
 
         assertEquals("Unable to save tasks to " + directoryPath, exception.getMessage());
     }
