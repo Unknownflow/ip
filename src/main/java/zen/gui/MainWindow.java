@@ -1,5 +1,7 @@
 package zen.gui;
 
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -7,12 +9,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import zen.Zen;
 
 /**
  * Controller for the main GUI.
  */
 public class MainWindow extends AnchorPane {
+    private static final Duration EXIT_DELAY = Duration.seconds(1);
+
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -39,7 +44,6 @@ public class MainWindow extends AnchorPane {
      */
     public void setZen(Zen zen) {
         this.zen = zen;
-
 
         dialogContainer.getChildren().add(
                 DialogBox.getZenDialog(zen.getGreeting(), zenImage)
@@ -71,6 +75,14 @@ public class MainWindow extends AnchorPane {
         if (zen.hasExited()) {
             userInput.setDisable(true);
             sendButton.setDisable(true);
+            scheduleExit();
         }
+    }
+
+    /** Closes the application after leaving the farewell message visible briefly. */
+    private void scheduleExit() {
+        PauseTransition exitPause = new PauseTransition(EXIT_DELAY);
+        exitPause.setOnFinished(event -> Platform.exit());
+        exitPause.play();
     }
 }

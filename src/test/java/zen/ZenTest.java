@@ -1,6 +1,7 @@
 package zen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -28,7 +29,15 @@ public class ZenTest {
 
         assertEquals("The find command requires a keyword.", zen.getResponse("find"));
         assertEquals("The bye command does not take arguments.", zen.getResponse("bye later"));
+        assertFalse(zen.hasExited());
+    }
+
+    @Test
+    public void getResponse_bye_returnsFarewellAndEndsSession() {
+        Zen zen = new Zen(temporaryDirectory.resolve("tasks.txt").toString());
+
         assertEquals("Bye. See you again soon!", zen.getResponse("bye"));
+        assertTrue(zen.hasExited());
     }
 
     @Test
