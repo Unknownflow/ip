@@ -1,24 +1,28 @@
 # Zen User Guide
 
 Zen is a friendly desktop task manager for people who prefer typing commands. Add
-todos, deadlines, and events; then use Zen to find, complete, and prioritise them.
+todos, deadlines, and events; then use Zen to find, complete, and prioritize them.
 Your tasks are saved automatically between sessions.
+
 
 ## Quick start
 
-1. Make sure Java 25 or later is installed.
-2. Download `zen.jar` and place it in a folder you can keep using.
-3. Open a terminal in that folder and run `java -jar zen.jar`.
-4. Type a command in the input box and press <kbd>Enter</kbd>.
+1. Make sure Java `25` or later is installed on your computer.  
+**Mac users**: Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
+2. Download the latest `zen.jar` from [here](https://github.com/Unknownflow/ip/releases/tag/A-Release).
+3. Copy the file to the folder you want to use as the home folder for your Zen chatbot.
+4. Open a terminal in that folder and run `java -jar zen.jar`. A GUI similar to the one below should appear in a few seconds. Note how the Zen chatbot contains some sample data.
 
-Try these commands:
+![Screenshot of Zen chatbot containing sample data](Ui.png)
 
-```text
-todo buy milk /priority high
-deadline submit report /by 2026-08-24 18:00:00
-list
-bye
-```
+5. Type a command in the command box and press Enter to execute it.  
+Some example commands you can try:
+
+- `todo buy milk /priority high`: Adds a todo to buy milk with high priority.
+- `deadline submit report /by 2026-08-24 18:00:00 /priority medium`: Adds a deadline to submit report with medium priority by 6pm on Aug 24, 2026.
+- `event project meeting /from 2026-09-24 09:00:00 /to 2026-09-24 10:00:00 /priority low`: Adds an project meeting event with low priority from 9am to 10am on Sep 24, 2026.
+- `list`: Lists all tasks.
+- `bye`: Exits the app.
 
 ## Command format
 
@@ -27,8 +31,7 @@ bye
 - Text in `[square brackets]` is optional.
 - Dates use `yyyy-MM-dd`; date-times use `yyyy-MM-dd HH:mm:ss`, for example
   `2026-08-24 18:00:00`.
-- Command words and priority values are not case-sensitive. Task descriptions and
-  `find` keywords are case-sensitive.
+- Command words and priority values are case-insensitive. Task descriptions are case-sensitive.
 - Do not use `|` in a task description.
 
 ## Features
@@ -43,7 +46,7 @@ Example: `todo buy milk /priority high`
 
 ### Adding a deadline: `deadline`
 
-Adds a task that is due at a particular date and time.
+Adds a deadline that is due at a particular date and time.
 
 Format: `deadline DESCRIPTION /by yyyy-MM-dd HH:mm:ss [/priority PRIORITY]`
 
@@ -51,7 +54,7 @@ Example: `deadline submit report /by 2026-08-24 18:00:00 /priority medium`
 
 ### Adding an event: `event`
 
-Adds a task that happens from one date-time to another.
+Adds an event that happens from one date-time to another.
 
 Format: `event DESCRIPTION /from yyyy-MM-dd HH:mm:ss /to yyyy-MM-dd HH:mm:ss [/priority PRIORITY]`
 
@@ -71,7 +74,7 @@ again with the desired priority.
 
 ### Listing all tasks: `list`
 
-Shows every task in priority order.
+Shows all tasks in priority order followed by insertion order.
 
 Format: `list`
 
