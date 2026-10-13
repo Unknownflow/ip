@@ -11,18 +11,21 @@ Your tasks are saved automatically between sessions.
 **Mac users**: Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 2. Download the latest `zen.jar` from [here](https://github.com/Unknownflow/ip/releases/tag/A-Release).
 3. Copy the file to the folder you want to use as the home folder for your Zen chatbot.
-4. Open a terminal in that folder and run `java -jar zen.jar`. A GUI similar to the one below should appear in a few seconds. Note how the Zen chatbot contains some sample data.
-
-![Screenshot of Zen chatbot containing sample data](Ui.png)
+4. Open a terminal in that folder and run `java -jar zen.jar`.
 
 5. Type a command in the command box and press Enter to execute it.  
 Some example commands you can try:
 
 - `todo buy milk /priority high`: Adds a todo to buy milk with high priority.
-- `deadline submit report /by 2026-08-24 18:00:00 /priority medium`: Adds a deadline to submit report with medium priority by 6pm on Aug 24, 2026.
 - `event project meeting /from 2026-09-24 09:00:00 /to 2026-09-24 10:00:00 /priority low`: Adds an project meeting event with low priority from 9am to 10am on Sep 24, 2026.
+- `deadline submit report /by 2026-09-24 18:00:00 /priority medium`: Adds a deadline to submit report with medium priority by 6pm on Aug 24, 2026.
+- `todo buy shoes`: Adds a todo to buy shoes with no priority
 - `list`: Lists all tasks.
 - `bye`: Exits the app.
+
+A GUI similar to the one below should appear when you enter the example commands above.
+
+![Screenshot of Zen chatbot displaying results of example commands](Ui.png)
 
 ## Command format
 
