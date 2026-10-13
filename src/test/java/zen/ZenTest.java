@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -38,6 +40,49 @@ public class ZenTest {
 
         assertEquals("Bye. See you again soon!", zen.getResponse("bye"));
         assertTrue(zen.hasExited());
+    }
+
+    @Test
+    public void commandResponses_doNotPrintToStandardOutput() {
+        PrintStream originalStandardOutput = System.out;
+        ByteArrayOutputStream standardOutput = new ByteArrayOutputStream();
+        try {
+            System.setOut(new PrintStream(standardOutput));
+            Zen zen = new Zen(temporaryDirectory.resolve("tasks.txt").toString());
+
+            zen.getResponse("todo buy milk");
+            zen.getResponse("list");
+            zen.getResponse("unknown");
+            zen.getResponse("bye");
+        } finally {
+            System.setOut(originalStandardOutput);
+        }
+
+        assertEquals("", standardOutput.toString());
+    }
+
+    @Test
+    public void terminalOutputFlag_enabledThenDisabled_controlsTerminalOutput() {
+        PrintStream originalStandardOutput = System.out;
+        ByteArrayOutputStream standardOutput = new ByteArrayOutputStream();
+        try {
+            System.setOut(new PrintStream(standardOutput));
+            Zen zen = new Zen(temporaryDirectory.resolve("tasks.txt").toString());
+            zen.setTerminalOutputEnabled(true);
+
+            assertEquals("Got it. I've added this task:\n  [T][ ] buy milk (priority: none)"
+                    + "\nYou now have 1 task in the list.", zen.getResponse("todo buy milk"));
+
+            assertTrue(standardOutput.toString().contains("Got it. I've added this task:"));
+            standardOutput.reset();
+            zen.setTerminalOutputEnabled(false);
+
+            zen.getResponse("list");
+        } finally {
+            System.setOut(originalStandardOutput);
+        }
+
+        assertEquals("", standardOutput.toString());
     }
 
     @Test

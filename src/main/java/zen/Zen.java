@@ -52,6 +52,7 @@ public class Zen {
 
         ui.printGreeting(GREETING);
         while (!isExit) {
+            ui.clearResponse();
             try {
                 String fullCommand = ui.readCommand();
                 ui.printDivider();
@@ -96,6 +97,15 @@ public class Zen {
             }
         }
         return ui.getResponse();
+    }
+
+    /**
+     * Enables or disables formatted terminal output for debugging.
+     *
+     * @param isTerminalOutputEnabled whether terminal output is enabled
+     */
+    public void setTerminalOutputEnabled(boolean isTerminalOutputEnabled) {
+        ui.setTerminalOutputEnabled(isTerminalOutputEnabled);
     }
 
     /**

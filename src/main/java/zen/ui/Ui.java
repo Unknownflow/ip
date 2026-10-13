@@ -6,7 +6,7 @@ import java.util.Scanner;
 import zen.task.Task;
 import zen.task.TaskList;
 
-/** Handles console input and output for the Zen application. */
+/** Records command responses for the graphical interface and reads legacy console input. */
 public class Ui {
     private static final String DIVIDER = "____________________________________________________________";
     private static final String INDENTATION = " ".repeat(5);
@@ -21,11 +21,13 @@ public class Ui {
            """;
     private final Scanner scanner;
     private final StringBuilder response;
+    private boolean isTerminalOutputEnabled;
 
     /** Creates a user interface that reads commands from standard input. */
     public Ui() {
         this.scanner = new Scanner(System.in);
         this.response = new StringBuilder();
+        this.isTerminalOutputEnabled = false;
     }
 
     /** Returns the next trimmed command read from standard input. */
@@ -34,11 +36,24 @@ public class Ui {
     }
 
     /**
-     * Prints each supplied line with the standard console indentation.
+     * Enables or disables formatted terminal output for debugging.
+     *
+     * @param isTerminalOutputEnabled whether terminal output is enabled
+     */
+    public void setTerminalOutputEnabled(boolean isTerminalOutputEnabled) {
+        this.isTerminalOutputEnabled = isTerminalOutputEnabled;
+    }
+
+    /**
+     * Prints each supplied line with the standard console indentation when debugging is enabled.
      *
      * @param lines lines to print; embedded line breaks are also indented
      */
-    private static void printIndented(String... lines) {
+    private void printIndented(String... lines) {
+        if (!isTerminalOutputEnabled) {
+            return;
+        }
+
         for (String line : lines) {
             // Ensure each line after a line break begins with indentation.
             for (String individualLine : line.split("\\R")) {
@@ -75,9 +90,11 @@ public class Ui {
         return response.toString();
     }
 
-    /** Prints a divider between console messages. */
+    /** Prints a divider between terminal messages when debugging is enabled. */
     public void printDivider() {
-        System.out.println(INDENTED_DIVIDER);
+        if (isTerminalOutputEnabled) {
+            System.out.println(INDENTED_DIVIDER);
+        }
     }
 
     /**
@@ -96,9 +113,9 @@ public class Ui {
     }
 
     /**
-     * Prints the message with the standard console indentation and records it for the GUI.
+     * Records a message for the graphical user interface.
      *
-     * @param lines the message to print.
+     * @param lines message lines to record
      */
     public void echo(String... lines) {
         printIndented(lines);
@@ -197,11 +214,15 @@ public class Ui {
     }
 
     /**
-     * Prints the application greeting surrounded by console dividers.
+     * Prints the application greeting when terminal output is enabled for debugging.
      *
      * @param greeting greeting shared with the graphical interface
      */
     public void printGreeting(String greeting) {
+        if (!isTerminalOutputEnabled) {
+            return;
+        }
+
         printDivider();
         printGreetingContent(BANNER, greeting);
         printDivider();
@@ -221,18 +242,22 @@ public class Ui {
         }
     }
 
-    /** Prints the farewell message and closes standard input. */
+    /** Records the farewell message and closes standard input. */
     public void printExitMessage() {
         echo("Bye. See you again soon!");
         scanner.close();
     }
 
     /**
-     * Prints an initialization error message.
+     * Prints an initialization error message when terminal output is enabled for debugging.
      *
-     * @param errorMessage the error explanation.
+     * @param errorMessage the error explanation
      */
     public void printErrorMessage(String errorMessage) {
+        if (!isTerminalOutputEnabled) {
+            return;
+        }
+
         String exitMessage = """
                 %s
                     Error occurred: %s
