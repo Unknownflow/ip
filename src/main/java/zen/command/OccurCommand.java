@@ -24,7 +24,6 @@ public class OccurCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws ZenException {
         LocalDate date = Parser.parseDate(arguments);
-        ui.echo("Tasks on " + date + ":");
-        ui.printTaskList(tasks.getAllTasksOnDate(date));
+        ui.printTaskListOccurring(tasks.getAllTasksOnDate(date), date);
     }
 }

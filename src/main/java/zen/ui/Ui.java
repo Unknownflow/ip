@@ -1,5 +1,6 @@
 package zen.ui;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 import zen.task.Task;
@@ -114,6 +115,19 @@ public class Ui {
             echo("Your task list is currently empty.");
         } else {
             echo("Here are the tasks in your list:", taskList.toString());
+        }
+    }
+
+    /**
+     * Prints a task list which contains tasks occurring on the date, or a message when it is empty.
+     *
+     * @param taskList the task list to print.
+     */
+    public void printTaskListOccurring(TaskList taskList, LocalDate date) {
+        if (taskList.isEmpty()) {
+            echo("No tasks occurring on " + date.toString() + ".");
+        } else {
+            echo("Task occurring on " + date.toString() + ":", taskList.toString());
         }
     }
 

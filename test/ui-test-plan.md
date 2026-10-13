@@ -1379,14 +1379,12 @@ bye
      You now have 3 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
-     Tasks on 2026-08-24:
-     Here are the tasks in your list:
+     Task occurring on 2026-08-24:
      1.[D][ ] submit report (by: Aug 24 2026 18:00:00) (priority: none)
      2.[E][ ] overnight deployment (from: Aug 23 2026 23:00:00 to: Aug 24 2026 01:00:00) (priority: none)
     ____________________________________________________________
     ____________________________________________________________
-     Tasks on 2026-08-25:
-     Your task list is currently empty.
+     No tasks occurring on 2026-08-25.
     ____________________________________________________________
     ____________________________________________________________
      The date is not in the correct format.
@@ -1677,8 +1675,7 @@ bye
      2.[E][ ] project review (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00) (priority: low)
     ____________________________________________________________
     ____________________________________________________________
-     Tasks on 2026-08-24:
-     Here are the tasks in your list:
+     Task occurring on 2026-08-24:
      1.[D][ ] urgent project (by: Aug 24 2026 18:00:00) (priority: high)
      2.[E][ ] project review (from: Aug 24 2026 09:00:00 to: Aug 24 2026 10:00:00) (priority: low)
     ____________________________________________________________
