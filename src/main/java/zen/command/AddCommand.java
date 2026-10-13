@@ -11,7 +11,7 @@ import zen.ui.Ui;
  */
 public abstract class AddCommand extends Command {
     /**
-     * Adds, saves, and displays the supplied task.
+     * Adds the supplied task to the task list, saves the updated list, and displays the result.
      *
      * @param task Task to add.
      * @param tasks Task list to update.
