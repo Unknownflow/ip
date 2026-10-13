@@ -36,6 +36,8 @@ A GUI similar to the one below should appear when you enter the example commands
   `2026-08-24 18:00:00`.
 - Command words and priority values are case-insensitive. Task descriptions are case-sensitive.
 - Do not use `|` in a task description.
+- Deadline and event markers (`/by`, `/from`, and `/to`) are recognised only when they are
+  standalone, whitespace-separated tokens. They may appear within a word or URL in a task description.
 
 ## Features
 

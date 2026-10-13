@@ -137,6 +137,13 @@ public class ParserTest {
         assertEquals("D | 0 | submit assignment | 2026-10-10T10:30 | none", deadline.toStorageString());
     }
 
+    @Test
+    public void parseDeadline_delimiterWithinDescriptionToken_returnsDeadline() throws ZenException {
+        Deadline deadline = Parser.parseDeadline("check nus.edu/bylaws /by 2026-10-20 12:00:00");
+
+        assertEquals("D | 0 | check nus.edu/bylaws | 2026-10-20T12:00 | none", deadline.toStorageString());
+    }
+
     // AI-assisted
     @Test
     public void parseDeadline_terminalPriority_returnsPrioritizedDeadline() throws ZenException {
@@ -213,6 +220,15 @@ public class ParserTest {
         Event event = Parser.parseEvent("  meeting  /from 2026-10-10 10:30:00 /to 2026-10-10 10:30:00  ");
 
         assertEquals("E | 0 | meeting | 2026-10-10T10:30 to 2026-10-10T10:30 | none", event.toStorageString());
+    }
+
+    @Test
+    public void parseEvent_delimitersWithinDescriptionTokens_returnsEvent() throws ZenException {
+        Event event = Parser.parseEvent("check /fromage nus.edu/today /from 2026-10-20 09:00:00 "
+                + "/to 2026-10-20 10:00:00");
+
+        assertEquals("E | 0 | check /fromage nus.edu/today | 2026-10-20T09:00 to 2026-10-20T10:00 | none",
+                event.toStorageString());
     }
 
     @Test

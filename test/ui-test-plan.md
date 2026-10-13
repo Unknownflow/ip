@@ -1737,3 +1737,47 @@ bye
 
 ```
 
+### UI-039 — Positive: delimiter text within task descriptions
+
+**Aim:** Verify that delimiter-like text within a larger description token is stored as description text.
+
+**Inputs:**
+```text
+deadline check nus.edu/bylaws /by 2026-10-20 12:00:00
+event check /fromage nus.edu/today /from 2026-10-20 09:00:00 /to 2026-10-20 10:00:00
+list
+bye
+```
+
+**Expected output:**
+```text
+    ____________________________________________________________
+     ______              
+    |__  /___  _ __      
+      / // _ \| '_ \   
+     / /|  __/| | | |    
+    /____\___||_| |_|
+    Hello! I'm Zen, your calm task companion.
+    What can I do for you?
+    ____________________________________________________________
+
+    ____________________________________________________________
+     Got it. I've added this task:
+       [D][ ] check nus.edu/bylaws (by: Oct 20 2026 12:00:00) (priority: none)
+     You now have 1 task in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Got it. I've added this task:
+       [E][ ] check /fromage nus.edu/today (from: Oct 20 2026 09:00:00 to: Oct 20 2026 10:00:00) (priority: none)
+     You now have 2 tasks in the list.
+    ____________________________________________________________
+    ____________________________________________________________
+     Here are the tasks in your list:
+     1.[D][ ] check nus.edu/bylaws (by: Oct 20 2026 12:00:00) (priority: none)
+     2.[E][ ] check /fromage nus.edu/today (from: Oct 20 2026 09:00:00 to: Oct 20 2026 10:00:00) (priority: none)
+    ____________________________________________________________
+    ____________________________________________________________
+     Bye. See you again soon!
+    ____________________________________________________________
+```
+

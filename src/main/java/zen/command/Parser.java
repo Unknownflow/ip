@@ -18,6 +18,7 @@ import zen.task.Todo;
 public class Parser {
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String DATE_TIME_FORMAT = DATE_FORMAT + " HH:mm:ss";
+    private static final String DEADLINE_BY_DELIMITER = "/by";
     private static final String EVENT_FROM_DELIMITER = "/from";
     private static final String EVENT_TO_DELIMITER = "/to";
     private static final String PRIORITY_FORMAT = "Please choose high, medium, or low for priority."
@@ -28,6 +29,9 @@ public class Parser {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter
             .ofPattern("uuuu-MM-dd HH:mm:ss")
             .withResolverStyle(ResolverStyle.STRICT);
+    private static final Pattern DEADLINE_BY_TOKEN_PATTERN = Pattern.compile("(?<!\\S)/by(?!\\S)");
+    private static final Pattern EVENT_FROM_TOKEN_PATTERN = Pattern.compile("(?<!\\S)/from(?!\\S)");
+    private static final Pattern EVENT_TO_TOKEN_PATTERN = Pattern.compile("(?<!\\S)/to(?!\\S)");
     private static final Pattern PRIORITY_TOKEN_PATTERN = Pattern.compile("(?<!\\S)/priority(?!\\S)");
     private static final Pattern TERMINAL_PRIORITY_PATTERN = Pattern.compile("(?s)^(.*)\\s+/priority\\s+(\\S+)\\s*$");
 
@@ -155,10 +159,12 @@ public class Parser {
     public static Deadline parseDeadline(String userInput) throws ZenException {
         PriorityArguments priorityArguments = extractPriorityArguments(userInput);
         userInput = priorityArguments.details();
-        int byIdx = userInput.indexOf("/by");
+        Matcher byMatcher = DEADLINE_BY_TOKEN_PATTERN.matcher(userInput);
+        int byIdx = byMatcher.find() ? byMatcher.start() : -1;
 
         if (byIdx == -1) {
-            throw new ZenException("Please include /by in your deadline to separate the description "
+            throw new ZenException("Please include " + DEADLINE_BY_DELIMITER
+                    + " in your deadline to separate the description "
                     + "from the due date and time."
                     + DEADLINE_FORMAT);
         }
@@ -170,14 +176,14 @@ public class Parser {
         }
         validateTaskDescription(description);
 
-        int nextByIdx = userInput.indexOf("/by", byIdx + "/by".length());
-        if (nextByIdx != -1) {
-            throw new ZenException("Please include only one /by in your deadline to separate the description "
+        if (byMatcher.find()) {
+            throw new ZenException("Please include only one " + DEADLINE_BY_DELIMITER
+                    + " in your deadline to separate the description "
                     + "from the due date and time."
                     + DEADLINE_FORMAT);
         }
 
-        String dueBy = userInput.substring(byIdx + "/by".length()).trim();
+        String dueBy = userInput.substring(byIdx + DEADLINE_BY_DELIMITER.length()).trim();
         if (dueBy.isEmpty()) {
             throw new ZenException("The due date and time cannot be empty. Please try again."
                     + DEADLINE_FORMAT);
@@ -206,10 +212,12 @@ public class Parser {
     public static Event parseEvent(String userInput) throws ZenException {
         PriorityArguments priorityArguments = extractPriorityArguments(userInput);
         userInput = priorityArguments.details();
-        int fromIdx = userInput.indexOf(EVENT_FROM_DELIMITER);
-        int toIdx = userInput.indexOf(EVENT_TO_DELIMITER);
+        Matcher fromMatcher = EVENT_FROM_TOKEN_PATTERN.matcher(userInput);
+        Matcher toMatcher = EVENT_TO_TOKEN_PATTERN.matcher(userInput);
+        int fromIdx = fromMatcher.find() ? fromMatcher.start() : -1;
+        int toIdx = toMatcher.find() ? toMatcher.start() : -1;
 
-        validateEventDelimiters(userInput, fromIdx, toIdx);
+        validateEventDelimiters(fromMatcher, toMatcher, fromIdx, toIdx);
 
         String description = userInput.substring(0, fromIdx).trim();
         String start = userInput.substring(fromIdx + EVENT_FROM_DELIMITER.length(), toIdx).trim();
@@ -223,12 +231,14 @@ public class Parser {
     /**
      * Validates that an event command contains one correctly ordered pair of delimiters.
      *
-     * @param userInput raw event command arguments
+     * @param fromMatcher matcher that has found the first {@code /from} delimiter, if present
+     * @param toMatcher matcher that has found the first {@code /to} delimiter, if present
      * @param fromIdx position of the {@code /from} delimiter
      * @param toIdx position of the {@code /to} delimiter
      * @throws ZenException if either delimiter is missing, duplicated, or out of order
      */
-    private static void validateEventDelimiters(String userInput, int fromIdx, int toIdx) throws ZenException {
+    private static void validateEventDelimiters(Matcher fromMatcher, Matcher toMatcher, int fromIdx, int toIdx)
+            throws ZenException {
         if (fromIdx == -1) {
             throw new ZenException("Please include " + EVENT_FROM_DELIMITER
                     + " in your event to separate the description from the timings." + EVENT_FORMAT);
@@ -241,11 +251,11 @@ public class Parser {
                     + EVENT_FORMAT);
         }
 
-        if (userInput.indexOf(EVENT_FROM_DELIMITER, fromIdx + EVENT_FROM_DELIMITER.length()) != -1) {
+        if (fromMatcher.find()) {
             throw new ZenException("Please include only one " + EVENT_FROM_DELIMITER + " in your event."
                     + EVENT_FORMAT);
         }
-        if (userInput.indexOf(EVENT_TO_DELIMITER, toIdx + EVENT_TO_DELIMITER.length()) != -1) {
+        if (toMatcher.find()) {
             throw new ZenException("Please include only one " + EVENT_TO_DELIMITER + " in your event."
                     + EVENT_FORMAT);
         }
